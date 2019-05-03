@@ -400,7 +400,7 @@ public:
 	}
 
 	bool is_alive() {
-		return this->health() > 0;
+		return life_state() == 0;
 	}
 
 	bool is_moving() {
