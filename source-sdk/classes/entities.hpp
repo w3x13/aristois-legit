@@ -400,7 +400,7 @@ public:
 	}
 
 	bool is_alive() {
-		return utilities::call_virtual<bool(__thiscall*)(void*)>(this, 151)(this);
+		return this->health() > 0;
 	}
 
 	bool is_moving() {
