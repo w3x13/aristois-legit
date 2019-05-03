@@ -155,11 +155,11 @@ public:
 	}
 	bool is_player() {
 		using original_fn = bool(__thiscall*)(entity_t*);
-		return (*(original_fn**)this)[153](this);
+		return (*(original_fn**)this)[155](this);
 	}
 	bool is_weapon() {
 		using original_fn = bool(__thiscall*)(entity_t*);
-		return (*(original_fn**)this)[160](this);
+		return (*(original_fn**)this)[163](this);
 	}
 	vec3_t get_absolute_origin() {
 		__asm {
@@ -270,21 +270,21 @@ public:
 
 	float get_innacuracy() {
 		using original_fn = float(__thiscall*)(void*);
-		return (*(original_fn**)this)[471](this);
+		return (*(original_fn**)this)[476](this);
 	}
 
 	float get_spread() {
 		using original_fn = float(__thiscall*)(void*);
-		return (*(original_fn**)this)[436](this);
+		return (*(original_fn**)this)[446](this);
 	}
 
 	void update_accuracy_penalty() {
 		using original_fn = void(__thiscall*)(void*);
-		(*(original_fn**)this)[472](this);
+		(*(original_fn**)this)[477](this);
 	}
 	weapon_info_t* get_weapon_data() {
 		using original_fn = weapon_info_t * (__thiscall*)(void*);
-		return (*(original_fn**)this)[448](this); //skinchanger crash
+		return (*(original_fn**)this)[454](this); //skinchanger crash
 	}
 };
 
@@ -423,7 +423,7 @@ public:
 
 	void update_client_side_animations() {
 		using original_fn = void(__thiscall*)(void*);
-		(*(original_fn**)this)[218](this);
+		(*(original_fn**)this)[221](this);
 	}
 
 	vec3_t & abs_origin() {
@@ -435,11 +435,11 @@ public:
 		return (*(original_fn**)this)[11](this);;
 	}
 	int	move_type() {
-		return *reinterpret_cast<int*> (reinterpret_cast<uintptr_t>(this) + 0x258); //hazedumper
+		return *reinterpret_cast<int*> (reinterpret_cast<uintptr_t>(this) + 0x25C); //hazedumper
 	}
 	vec3_t eye_pos() {
 		vec3_t ret;
-		utilities::call_virtual<void(__thiscall*)(void*, vec3_t&)>(this, 279)(this, ret); // this is the real eye pos
+		utilities::call_virtual<void(__thiscall*)(void*, vec3_t&)>(this, 281)(this, ret); // this is the real eye pos
 		return ret;
 	}
 
