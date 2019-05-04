@@ -133,36 +133,16 @@ void c_visuals::player_rendering(player_t* entity) {
 		box temp(bbox.x - 5, bbox.y + (bbox.h - bbox.h * (utilities::math::clamp_value<int>(entity->health(), 0, 100.f) / 100.f)), 1, bbox.h * (utilities::math::clamp_value<int>(entity->health(), 0, 100) / 100.f) - (entity->health() >= 100 ? 0 : -1));
 		box temp_bg(bbox.x - 5, bbox.y, 1, bbox.h);
 
-		//just edited hp bar to look nicer - desinger
-		if (entity->health()) {
-			int value[3] = { 0, 0, 0 };
+		// change the color depending on the entity health
+		auto health_color = color( ( 255 - entity->health() * 2.55 ), ( entity->health() * 2.55 ), 0, alpha[entity->index()] );
 
-			if (entity->health() >= 85) {
-				value[0] = 83; value[1] = 200; value[2] = 84;
-			}
-			else if (entity->health() >= 70) {
-				value[0] = 107; value[1] = 142; value[2] = 35;
-			}
-			else if (entity->health() >= 55) {
-				value[0] = 173; value[1] = 255; value[2] = 47;
-			}
-			else if (entity->health() >= 40) {
-				value[0] = 255; value[1] = 215; value[2] = 0;
-			}
-			else if (entity->health() >= 25) {
-				value[0] = 255; value[1] = 127; value[2] = 80;
-			}
-			else if (entity->health() >= 10) {
-				value[0] = 205; value[1] = 92; value[2] = 92;
-			}
-			else if (entity->health() >= 0) {
-				value[0] = 178; value[1] = 34; value[2] = 34;
-			}
+		// clamp health (custom maps, danger zone, etc)
+		if ( health > 100 )
+		    	col = color( 0, 255, 0 );
 
-			//draw actual dynamic hp bar
-			render::get().draw_filled_rect(temp_bg.x - 1, temp_bg.y - 1, temp_bg.w + 2, temp_bg.h + 2, color(0, 0, 0, 25 + alpha[entity->index()]));
-			render::get().draw_filled_rect(temp.x, temp.y, temp.w, temp.h, color(value[0], value[1], value[2], alpha[entity->index()]));
-		};
+		//draw actual dynamic hp bar
+		render::get().draw_filled_rect(temp_bg.x - 1, temp_bg.y - 1, temp_bg.w + 2, temp_bg.h + 2, color(0, 0, 0, 25 + alpha[entity->index()]));
+		render::get().draw_filled_rect(temp.x, temp.y, temp.w, temp.h, color(health_color));
 	}
 	if (c_config::get().player_name) {
 		auto red = c_config::get().clr_name[0] * 255;
