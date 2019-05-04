@@ -2,7 +2,8 @@
 Full project files for **aristois**, Counter-Strike: Global Offensive cheat.
 
 ## Known issues
-- Some crashes
+- Some crashes.
+- Skin changer is not finished.
 
 ## FAQ
 ### Where's the DLL file?
