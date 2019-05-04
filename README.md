@@ -4,6 +4,7 @@ Full project files for **aristois**, Counter-Strike: Global Offensive cheat.
 ## Known issues
 - Some crashes.
 - Skin changer is not finished.
+- Config system (check FAQ for temp fix).
 
 ## FAQ
 ### Where's the DLL file?
@@ -20,6 +21,9 @@ Press `END` key.
 
 ### Assertion failed after injection?
 line 1269? uninstall icon font from your system, and install font localized in **aristois-legit/font** (**icon font.ttf**)
+
+### Config system not working?
+copy **alpha.ini, beta.ini, gamma.ini** files from configs folder to **C:\aristois**
 
 ## Media
 ![image](https://i.imgur.com/KBo4mzn.png)
