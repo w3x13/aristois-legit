@@ -107,6 +107,12 @@ public:
 	bool misc_save_config = false;
 	bool misc_load_config = false;
 	bool bunny_hop = false;
+	bool bunny_hop_humanize = false;
+	bool bunny_hop_minimum = false;
+	bool bunny_hop_maximum = false;
+	int bunny_hop_minimum_value = 0;
+	int bunny_hop_maximum_value = 0;
+	int bunny_hop_hitchance = 0;
 	bool clan_tag = false;
 	bool radar = false;
 	bool hitmarker = false;

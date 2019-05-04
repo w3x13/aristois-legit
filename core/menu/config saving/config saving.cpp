@@ -99,6 +99,11 @@ void c_config_saving::Setup() {
 
 	setup_value(c_config::get().misc_enabled, false, "Misc", "Enabled");
 	setup_value(c_config::get().bunny_hop, false, "Misc", "BunnyHop");
+	setup_value(c_config::get().bunny_hop_humanize, false, "Misc", "BunnyHopHumanize");
+	setup_value(c_config::get().bunny_hop_minimum, false, "Misc", "BunnyHopMinimum");
+	setup_value(c_config::get().bunny_hop_maximum, false, "Misc", "BunnyHopMaximum");
+	setup_value(c_config::get().bunny_hop_minimum_value, 0, "Misc", "BunnyHopMinimumValue");
+	setup_value(c_config::get().bunny_hop_maximum_value, 0, "Misc", "BunnyHopMaximumValue");
 	setup_value(c_config::get().clan_tag, false, "Misc", "ClanTag");
 	setup_value(c_config::get().radar, false, "Misc", "Radar");
 	setup_value(c_config::get().remove_scope, false, "Misc", "RemoveScope");

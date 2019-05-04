@@ -469,9 +469,18 @@ void c_menu::run() {
 				ImGui::EndChild(true);
 				ImGui::NextColumn();
 
-				ImGui::BeginChild("movement", ImVec2(279, 543), true);
-				{
+				ImGui::BeginChild("movement", ImVec2(279, 543), true); {
 					ImGui::Checkbox("bunny hop", &c_config::get().bunny_hop);
+					if (c_config::get().bunny_hop) {
+						ImGui::Checkbox("humanize hops", &c_config::get().bunny_hop_humanize);
+						ImGui::SliderInt("hit chance", &c_config::get().bunny_hop_hitchance, 0, 100);
+						ImGui::Checkbox("minimum hops", &c_config::get().bunny_hop_minimum);
+						ImGui::SliderInt("minimum value", &c_config::get().bunny_hop_minimum_value, 0, 20);
+						ImGui::Checkbox("maximum hops", &c_config::get().bunny_hop_maximum);
+						ImGui::SliderInt("maximum value", &c_config::get().bunny_hop_maximum_value, 0, 20);
+					}
+
+
 					ImGui::Checkbox("edge jump", &c_config::get().edge_jump);
 					if (c_config::get().edge_jump) {
 						ImGui::Checkbox("duck in air", &c_config::get().edge_jump_duck_in_air);

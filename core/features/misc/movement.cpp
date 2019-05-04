@@ -9,30 +9,47 @@ void c_movement::bunnyhop(c_usercmd* user_cmd) {
 		return;
 
 	auto local_player = reinterpret_cast<player_t*>(interfaces::entity_list->get_client_entity(interfaces::engine->get_local_player()));
+	static bool last_jumped = false;
+	static bool fake_jump = false;
+	static int actual_jump = 0;
 
-	if (!local_player || !local_player->is_alive())
+	if (!local_player)
 		return;
 
-	if (local_player->move_type() == movetype_ladder)
+	if (local_player->move_type() == movetype_ladder || local_player->move_type() == movetype_noclip)
 		return;
 
-	if (!jumped_last_tick && should_fake_jump) {
-		should_fake_jump = false;
+	if (!last_jumped && fake_jump) {
+		fake_jump = false;
 		user_cmd->buttons |= in_jump;
 	}
 	else if (user_cmd->buttons & in_jump) {
 		if (local_player->flags() & fl_onground) {
-			jumped_last_tick = true;
-			should_fake_jump = true;
+			actual_jump++;
+			last_jumped = true;
+			fake_jump = true;
 		}
 		else {
+			if (c_config::get().bunny_hop_humanize && c_config::get().bunny_hop_minimum && (actual_jump > c_config::get().bunny_hop_minimum_value) && (rand() % 100 > c_config::get().bunny_hop_hitchance))
+				return;
+
+			if (c_config::get().bunny_hop_humanize && !c_config::get().bunny_hop_minimum && (rand() % 100 > c_config::get().bunny_hop_hitchance))
+				return;
+
+			if (c_config::get().bunny_hop_minimum && !c_config::get().bunny_hop_humanize && (actual_jump > c_config::get().bunny_hop_minimum_value))
+				return;
+
+			if (c_config::get().bunny_hop_maximum && (actual_jump > c_config::get().bunny_hop_maximum_value))
+				return;
+
 			user_cmd->buttons &= ~in_jump;
-			jumped_last_tick = false;
+			last_jumped = false;
 		}
 	}
 	else {
-		jumped_last_tick = false;
-		should_fake_jump = false;
+		actual_jump = 0;
+		last_jumped = false;
+		fake_jump = false;
 	}
 }
 
