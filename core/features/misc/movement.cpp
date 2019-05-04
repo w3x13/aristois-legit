@@ -1,8 +1,6 @@
 #include "../../../dependencies/common_includes.hpp"
 #include "movement.h"
 auto flags_backup = 0;
-auto jumped_last_tick = false;
-auto should_fake_jump = false;
 
 void c_movement::bunnyhop(c_usercmd* user_cmd) {
 	if (!c_config::get().bunny_hop || !c_config::get().misc_enabled)
