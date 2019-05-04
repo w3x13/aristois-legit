@@ -137,8 +137,8 @@ void c_visuals::player_rendering(player_t* entity) {
 		auto health_color = color( ( 255 - entity->health() * 2.55 ), ( entity->health() * 2.55 ), 0, alpha[entity->index()] );
 
 		// clamp health (custom maps, danger zone, etc)
-		if ( health > 100 )
-		    	col = color( 0, 255, 0 );
+		if ( entity->health() > 100 )
+		    	health_color = color( 0, 255, 0 );
 
 		//draw actual dynamic hp bar
 		render::get().draw_filled_rect(temp_bg.x - 1, temp_bg.y - 1, temp_bg.w + 2, temp_bg.h + 2, color(0, 0, 0, 25 + alpha[entity->index()]));
