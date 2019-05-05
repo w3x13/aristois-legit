@@ -126,8 +126,9 @@ void c_visuals::player_rendering(player_t* entity) {
 		auto green = c_config::get().clr_box[1] * 255;
 		auto blue = c_config::get().clr_box[2] * 255;
 
-		render::get().draw_outline(bbox.x, bbox.y, bbox.w, bbox.h, color(0, 0, 0, 255 + alpha[entity->index()]));
+		render::get().draw_outline(bbox.x - 1, bbox.y - 1, bbox.w + 2, bbox.h + 2, color(0, 0, 0, 255 + alpha[entity->index()]));
 		render::get().draw_rect(bbox.x, bbox.y, bbox.w, bbox.h, color(red, green, blue, alpha[entity->index()]));
+		render::get().draw_outline(bbox.x + 1, bbox.y + 1, bbox.w - 2, bbox.h - 2, color(0, 0, 0, 255 + alpha[entity->index()]));
 	}
 	if (c_config::get().player_health) {
 		box temp(bbox.x - 5, bbox.y + (bbox.h - bbox.h * (utilities::math::clamp_value<int>(entity->health(), 0, 100.f) / 100.f)), 1, bbox.h * (utilities::math::clamp_value<int>(entity->health(), 0, 100) / 100.f) - (entity->health() >= 100 ? 0 : -1));
