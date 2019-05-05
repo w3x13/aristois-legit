@@ -42,6 +42,9 @@ void hooks::initialize() {
 	surface_hook = std::make_unique<vmt_hook>();
 	modelrender_hook = std::make_unique<vmt_hook>();
 
+
+	render::get().setup_fonts();
+
 	client_hook->setup(interfaces::client);
 	client_hook->hook_index(37, reinterpret_cast<void*>(frame_stage_notify));
 
@@ -59,6 +62,7 @@ void hooks::initialize() {
 
 	surface_hook->setup(interfaces::surface);
 	surface_hook->hook_index(67, reinterpret_cast<void*>(lock_cursor));
+	surface_hook->hook_index(116, reinterpret_cast<void*>(on_screen_size_changed));
 
 	modelrender_hook->setup(interfaces::model_render);
 	modelrender_hook->hook_index(21, reinterpret_cast<void*>(draw_model_execute)); //hooked for backtrack chams
@@ -82,7 +86,6 @@ void hooks::initialize() {
 	interfaces::console->get_convar("viewmodel_offset_y")->callbacks.set_size(false);
 	interfaces::console->get_convar("viewmodel_offset_z")->callbacks.set_size(false);
 
-	render::get().setup_fonts();
 	hooked_events.setup();
 	initialize_kits();
 
@@ -115,6 +118,14 @@ float __stdcall hooks::viewmodel_fov() {
 	else {
 		return 68.f;
 	}
+}
+
+void __stdcall hooks::on_screen_size_changed(int old_width, int old_height) {
+	static auto original_fn = reinterpret_cast<on_screen_size_changed_fn>(surface_hook->get_original(116));
+
+	original_fn(interfaces::surface, old_width, old_height);
+
+	render::get().setup_fonts();
 }
 
 int __stdcall hooks::do_post_screen_effects(int value) {
@@ -195,12 +206,14 @@ bool __stdcall hooks::create_move(float frame_time, c_usercmd* user_cmd) {
 }
 
 void __fastcall hooks::override_view(void* _this, void* _edx, c_viewsetup* setup) {
-	reinterpret_cast<override_view_fn>(clientmode_hook->get_original(18))(interfaces::clientmode, _this, setup);
+	static auto original_fn = reinterpret_cast<override_view_fn>(clientmode_hook->get_original(18));
 	auto local_player = reinterpret_cast<player_t*>(interfaces::entity_list->get_client_entity(interfaces::engine->get_local_player()));
 
 	if (local_player && !local_player->is_scoped() && c_config::get().fov > 0 && c_config::get().visuals_enabled) {
 		setup->fov = 90 + c_config::get().fov;
 	}
+
+	original_fn(interfaces::clientmode, _this, setup);
 }
 
 void __stdcall hooks::draw_model_execute(IMatRenderContext * ctx, const draw_model_state_t & state, const model_render_info_t & info, matrix_t * bone_to_world) {
@@ -295,9 +308,11 @@ void __stdcall hooks::paint_traverse(unsigned int panel, bool force_repaint, boo
 }
 
 void __stdcall hooks::scene_end() {
-	reinterpret_cast<scene_end_fn>(renderview_hook->get_original(9))(interfaces::render_view);
+	auto original_fn = reinterpret_cast<scene_end_fn>(renderview_hook->get_original(9));
 
 	c_visuals::get().chams();
+
+	original_fn(interfaces::render_view);
 }
 
 extern LRESULT ImGui_ImplDX9_WndProcHandler(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
@@ -321,12 +336,14 @@ LRESULT __stdcall hooks::wndproc(HWND hwnd, UINT message, WPARAM wparam, LPARAM 
 }
 
 void __stdcall hooks::lock_cursor() {
+	auto original_fn = reinterpret_cast<lock_cursor_fn>(surface_hook->get_original(67));
+
 	if (c_menu::get().opened) {
 		interfaces::surface->unlock_cursor();
 		return;
 	}
 
-	reinterpret_cast<lock_cursor_fn>(surface_hook->get_original(67))(interfaces::surface);
+	original_fn(interfaces::surface);
 }
 
 static bool initialized = false;

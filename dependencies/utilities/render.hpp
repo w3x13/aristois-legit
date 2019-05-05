@@ -28,22 +28,18 @@ public: // fonts
 
 public: // basic renderer
 	void setup_fonts() {
-		static bool _o = false;
-		if (!_o) {
-			watermark_font = interfaces::surface->font_create();
-			key_stroke_font = interfaces::surface->font_create();
-			name_font = interfaces::surface->font_create();
-			weapon_icon_font = interfaces::surface->font_create();
+		watermark_font = interfaces::surface->font_create();
+		key_stroke_font = interfaces::surface->font_create();
+		name_font = interfaces::surface->font_create();
+		weapon_icon_font = interfaces::surface->font_create();
 
-			interfaces::surface->set_font_glyph(watermark_font, "Tahoma", 12, 500, 0, 0, font_flags::fontflag_dropshadow);
-			interfaces::surface->set_font_glyph(key_stroke_font, "Verdana", 24, 700, 0, 0, font_flags::fontflag_dropshadow | font_flags::fontflag_antialias);
-			interfaces::surface->set_font_glyph(name_font, "Verdana", 12, 500, 0, 0, font_flags::fontflag_antialias | font_flags::fontflag_dropshadow);
-			interfaces::surface->set_font_glyph(weapon_icon_font, "undefeated", 12, 500, 0, 0, font_flags::fontflag_antialias | font_flags::fontflag_dropshadow);
+		interfaces::surface->set_font_glyph(watermark_font, "Tahoma", 12, 500, 0, 0, font_flags::fontflag_dropshadow);
+		interfaces::surface->set_font_glyph(key_stroke_font, "Verdana", 24, 700, 0, 0, font_flags::fontflag_dropshadow | font_flags::fontflag_antialias);
+		interfaces::surface->set_font_glyph(name_font, "Verdana", 12, 500, 0, 0, font_flags::fontflag_antialias | font_flags::fontflag_dropshadow);
+		interfaces::surface->set_font_glyph(weapon_icon_font, "undefeated", 12, 500, 0, 0, font_flags::fontflag_antialias | font_flags::fontflag_dropshadow);
 
-			_o = true;
+		printf("Render initialized!\n");
 
-			printf("Render initialized!\n");
-		}
 	}
 	void draw_line(int x1, int y1, int x2, int y2, color colour) {
 		interfaces::surface->set_drawing_color(colour.r, colour.g, colour.b, colour.a);

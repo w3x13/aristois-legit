@@ -43,6 +43,7 @@ namespace hooks {
 	using present_fn = long(__stdcall*)(IDirect3DDevice9*, RECT*, RECT*, HWND, RGNDATA*);
 	using reset_fn = long(__stdcall*)(IDirect3DDevice9*, D3DPRESENT_PARAMETERS*);
 	using draw_model_execute_fn = void(__thiscall*)(iv_model_render*, IMatRenderContext*, const draw_model_state_t&, const model_render_info_t&, matrix_t*);
+	using on_screen_size_changed_fn = void(__thiscall*)(i_surface*, int, int);
 
 	int __stdcall do_post_screen_effects(int value);
 	bool __stdcall create_move(float frame_time, c_usercmd* user_cmd);
@@ -56,4 +57,5 @@ namespace hooks {
 	long __stdcall reset(IDirect3DDevice9* device, D3DPRESENT_PARAMETERS* present_parameters);
 	void __stdcall draw_model_execute(IMatRenderContext * ctx, const draw_model_state_t & state, const model_render_info_t & info, matrix_t * bone_to_world);
 	float __stdcall viewmodel_fov();
+	void __stdcall on_screen_size_changed(int old_width, int old_height);
 }
