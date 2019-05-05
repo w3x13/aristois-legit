@@ -136,6 +136,8 @@ bool __stdcall hooks::create_move(float frame_time, c_usercmd* user_cmd) {
 	if (!interfaces::entity_list->get_client_entity(interfaces::engine->get_local_player()))
 		return original_fn;
 
+	bool& send_packet = *reinterpret_cast<bool*>(*(static_cast<uintptr_t*>(_AddressOfReturnAddress()) - 1) - 0x1C);
+
 	if (interfaces::engine->is_connected() && interfaces::engine->is_in_game()) {
 		//misc
 		c_movement::get().bunnyhop(user_cmd);
