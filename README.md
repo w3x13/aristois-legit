@@ -21,6 +21,7 @@ Press `END` key.
 
 ### Assertion failed after injection?
 line 1269? uninstall icon font from your system, and install font localized in **aristois-legit/font** (**icon font.ttf**)
+or just comment it out "using //" this will not cause any harm.
 
 ### Config system not working?
 copy **alpha.ini, beta.ini, gamma.ini** files from configs folder to **C:\aristois**
