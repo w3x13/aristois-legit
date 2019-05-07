@@ -19,9 +19,6 @@ Press `INSERT` key.
 ### How can I unload the cheat?
 Press `END` key.
 
-### Assertion failed after injection?
-line 1269? uninstall icon font from your system, and install font localized in **aristois-legit/font** (**icon font.ttf**)
-
 ### Config system not working?
 copy **alpha.ini, beta.ini, gamma.ini** files from configs folder to **C:\aristois**
 

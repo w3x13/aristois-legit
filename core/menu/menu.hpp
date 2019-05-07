@@ -111,7 +111,6 @@ public:
 		Main = ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 18);
 		MainCaps = ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\segoeuil.ttf", 24);
 		Menu = ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Verdana.ttf", 12);
-		Icons = ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\icon font.ttf", 15);
 	}
 
 	void __stdcall end_present(IDirect3DDevice9* device) {
@@ -170,7 +169,6 @@ public:
 	ImFont* Main;
 	ImFont* Menu;
 	ImFont* MainCaps;
-	ImFont* Icons;
 	bool opened = false;
 private:
 	ImDrawData _drawData;

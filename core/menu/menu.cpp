@@ -10,7 +10,6 @@
 IDirect3DStateBlock9 *state_block;
 ImFont* Main;
 ImFont* MainCaps;
-ImFont* Icons;
 ImFont* Menu;
 
 bool reverse = false;
@@ -165,13 +164,11 @@ void c_menu::run() {
 				ImGui::NextColumn();
 
 				ImGui::BeginChild("settings", ImVec2(279, 543), true); {
-					ImGui::PushFont(Icons);
-					if (ImGui::ButtonT("A", ImVec2(50, 30), test, 0, false, ImColor(0, 0, 0))) test = 0; ImGui::SameLine(0, 0); //pistol
-					if (ImGui::ButtonT("W", ImVec2(50, 30), test, 1, false, false)) test = 1; ImGui::SameLine(0, 0); //rifle
-					if (ImGui::ButtonT("Z", ImVec2(50, 30), test, 2, false, false)) test = 2; ImGui::SameLine(0, 0); //sniper
-					if (ImGui::ButtonT("L", ImVec2(50, 30), test, 3, false, false)) test = 3; ImGui::SameLine(0, 0); //mg
-					if (ImGui::ButtonT("f", ImVec2(50, 30), test, 4, false, false)) test = 4; //heavy
-					ImGui::PopFont();
+					if (ImGui::ButtonT("pistol", ImVec2(50, 30), test, 0, false, ImColor(0, 0, 0))) test = 0; ImGui::SameLine(0, 0);
+					if (ImGui::ButtonT("rifle", ImVec2(50, 30), test, 1, false, false)) test = 1; ImGui::SameLine(0, 0); 
+					if (ImGui::ButtonT("sniper", ImVec2(50, 30), test, 2, false, false)) test = 2; ImGui::SameLine(0, 0); 
+					if (ImGui::ButtonT("smg", ImVec2(50, 30), test, 3, false, false)) test = 3; ImGui::SameLine(0, 0); 
+					if (ImGui::ButtonT("heavy", ImVec2(50, 30), test, 4, false, false)) test = 4; 
 
 					ImGui::PushFont(Menu);
 
@@ -539,13 +536,11 @@ void c_menu::run() {
 				ImGui::BeginChild("weapons", ImVec2(279, 543), true);
 				{
 					static int weapons_page = 0;
-					ImGui::PushFont(Icons);
-					if (ImGui::ButtonT("A", ImVec2(50, 30), weapons_page, 0, false, ImColor(0, 0, 0))) weapons_page = 0; ImGui::SameLine(0, 0); //pistol
-					if (ImGui::ButtonT("W", ImVec2(50, 30), weapons_page, 1, false, false)) weapons_page = 1; ImGui::SameLine(0, 0); //rifle
-					if (ImGui::ButtonT("Z", ImVec2(50, 30), weapons_page, 2, false, false)) weapons_page = 2; ImGui::SameLine(0, 0); //sniper
-					if (ImGui::ButtonT("L", ImVec2(50, 30), weapons_page, 3, false, false)) weapons_page = 3; ImGui::SameLine(0, 0); //mg
-					if (ImGui::ButtonT("f", ImVec2(50, 30), weapons_page, 4, false, false)) weapons_page = 4; //heavy
-					ImGui::PopFont();
+					if (ImGui::ButtonT("pistol", ImVec2(50, 30), weapons_page, 0, false, ImColor(0, 0, 0))) weapons_page = 0; ImGui::SameLine(0, 0); //pistol
+					if (ImGui::ButtonT("rifle", ImVec2(50, 30), weapons_page, 1, false, false)) weapons_page = 1; ImGui::SameLine(0, 0); //rifle
+					if (ImGui::ButtonT("sniper", ImVec2(50, 30), weapons_page, 2, false, false)) weapons_page = 2; ImGui::SameLine(0, 0); //sniper
+					if (ImGui::ButtonT("smg", ImVec2(50, 30), weapons_page, 3, false, false)) weapons_page = 3; ImGui::SameLine(0, 0); //mg
+					if (ImGui::ButtonT("heavy", ImVec2(50, 30), weapons_page, 4, false, false)) weapons_page = 4; //heavy
 
 					switch (weapons_page) {
 					case 0:
