@@ -3,7 +3,7 @@
 #include "imgui/imgui_internal.h"
 #include "config saving/config saving.h"
 #include "../features/misc/logs.hpp"
-#include "../features/skinchanger/kit_parser.hpp"
+#include "../features/skinchanger/parser.hpp"
 
 #define UNLEN 256
 IDirect3DStateBlock9 *state_block;
@@ -26,7 +26,7 @@ namespace gui {
 		ImGuiIO &io = ImGui::GetIO();
 		ImGuiStyle& style = ImGui::GetStyle();
 		int width = io.DisplaySize.x;
-		static long oldTime = -1;
+		static long old_time = -1;
 		ImGui::SetNextWindowPos(ImVec2(width - offset, 100));
 		style.WindowMinSize = ImVec2(100.f, 20.f);
 		ImGui::Begin("##PopUpWindow", &show_popup, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
@@ -44,12 +44,12 @@ namespace gui {
 			if (offset < ImGui::GetWindowWidth())
 				offset += (ImGui::GetWindowWidth() + 5) * ((1000.0f / ImGui::GetIO().Framerate) / 100);
 
-			if (offset >= ImGui::GetWindowWidth() && oldTime == -1) {
-				oldTime = current_time_ms;
+			if (offset >= ImGui::GetWindowWidth() && old_time == -1) {
+				old_time = current_time_ms;
 			}
 		}
 
-		if (current_time_ms - oldTime >= onScreenMils && oldTime != -1) // close after x mils
+		if (current_time_ms - old_time >= onScreenMils && old_time != -1)
 			reverse = true;
 
 		if (reverse) {
@@ -59,7 +59,7 @@ namespace gui {
 				offset = 0;
 				reverse = false;
 				*done = true;
-				oldTime = -1;
+				old_time = -1;
 				show_popup = false;
 			}
 		}
@@ -425,10 +425,10 @@ void c_menu::run() {
 					ImGui::Combo("condition", &c_config::get().knife_wear, "factory new\0minimal wear\0field-tested\0well-worn\0battle-scarred");
 
 					ImGui::Combo(("skin"), &c_config::get().paint_kit_vector_index_knife, [](void* data, int idx, const char** out_text) {
-						*out_text = k_skins[idx].name.c_str();
+						*out_text = parser_skins[idx].name.c_str();
 						return true;
-					}, nullptr, k_skins.size(), 10);
-					c_config::get().paint_kit_index_knife = k_skins[c_config::get().paint_kit_vector_index_knife].id;
+					}, nullptr, parser_skins.size(), 10);
+					c_config::get().paint_kit_index_knife = parser_skins[c_config::get().paint_kit_vector_index_knife].id;
 
 				}
 				ImGui::EndChild(true);
@@ -460,135 +460,135 @@ void c_menu::run() {
 					switch (weapons_page) {
 					case 0:
 						ImGui::Combo(("p2000"), &c_config::get().paint_kit_vector_index_p2000, [](void* data, int idx, const char** out_text) {
-							*out_text = k_skins[idx].name.c_str();
+							*out_text = parser_skins[idx].name.c_str();
 							return true;
-						}, nullptr, k_skins.size(), 10);
-						c_config::get().paint_kit_index_p2000 = k_skins[c_config::get().paint_kit_vector_index_p2000].id;
+						}, nullptr, parser_skins.size(), 10);
+						c_config::get().paint_kit_index_p2000 = parser_skins[c_config::get().paint_kit_vector_index_p2000].id;
 
 
 						ImGui::Combo(("usp-s"), &c_config::get().paint_kit_vector_index_usp, [](void* data, int idx, const char** out_text) {
-							*out_text = k_skins[idx].name.c_str();
+							*out_text = parser_skins[idx].name.c_str();
 							return true;
-						}, nullptr, k_skins.size(), 10);
-						c_config::get().paint_kit_index_usp = k_skins[c_config::get().paint_kit_vector_index_usp].id;
+						}, nullptr, parser_skins.size(), 10);
+						c_config::get().paint_kit_index_usp = parser_skins[c_config::get().paint_kit_vector_index_usp].id;
 
 						ImGui::Combo(("glock"), &c_config::get().paint_kit_vector_index_glock, [](void* data, int idx, const char** out_text) {
-							*out_text = k_skins[idx].name.c_str();
+							*out_text = parser_skins[idx].name.c_str();
 							return true;
-						}, nullptr, k_skins.size(), 10);
-						c_config::get().paint_kit_index_glock = k_skins[c_config::get().paint_kit_vector_index_glock].id;
+						}, nullptr, parser_skins.size(), 10);
+						c_config::get().paint_kit_index_glock = parser_skins[c_config::get().paint_kit_vector_index_glock].id;
 
 						ImGui::Combo(("p250"), &c_config::get().paint_kit_vector_index_p250, [](void* data, int idx, const char** out_text) {
-							*out_text = k_skins[idx].name.c_str();
+							*out_text = parser_skins[idx].name.c_str();
 							return true;
-						}, nullptr, k_skins.size(), 10);
-						c_config::get().paint_kit_index_p250 = k_skins[c_config::get().paint_kit_vector_index_p250].id;
+						}, nullptr, parser_skins.size(), 10);
+						c_config::get().paint_kit_index_p250 = parser_skins[c_config::get().paint_kit_vector_index_p250].id;
 
 						ImGui::Combo(("five-seven"), &c_config::get().paint_kit_vector_index_fiveseven, [](void* data, int idx, const char** out_text) {
-							*out_text = k_skins[idx].name.c_str();
+							*out_text = parser_skins[idx].name.c_str();
 							return true;
-						}, nullptr, k_skins.size(), 10);
-						c_config::get().paint_kit_index_fiveseven = k_skins[c_config::get().paint_kit_vector_index_fiveseven].id;
+						}, nullptr, parser_skins.size(), 10);
+						c_config::get().paint_kit_index_fiveseven = parser_skins[c_config::get().paint_kit_vector_index_fiveseven].id;
 
 						ImGui::Combo(("tec9"), &c_config::get().paint_kit_vector_index_tec, [](void* data, int idx, const char** out_text) {
-							*out_text = k_skins[idx].name.c_str();
+							*out_text = parser_skins[idx].name.c_str();
 							return true;
-						}, nullptr, k_skins.size(), 10);
-						c_config::get().paint_kit_index_tec = k_skins[c_config::get().paint_kit_vector_index_tec].id;
+						}, nullptr, parser_skins.size(), 10);
+						c_config::get().paint_kit_index_tec = parser_skins[c_config::get().paint_kit_vector_index_tec].id;
 
 						ImGui::Combo(("cz75a"), &c_config::get().paint_kit_vector_index_cz, [](void* data, int idx, const char** out_text) {
-							*out_text = k_skins[idx].name.c_str();
+							*out_text = parser_skins[idx].name.c_str();
 							return true;
-						}, nullptr, k_skins.size(), 10);
-						c_config::get().paint_kit_index_cz = k_skins[c_config::get().paint_kit_vector_index_cz].id;
+						}, nullptr, parser_skins.size(), 10);
+						c_config::get().paint_kit_index_cz = parser_skins[c_config::get().paint_kit_vector_index_cz].id;
 
 						ImGui::Combo(("duals"), &c_config::get().paint_kit_vector_index_duals, [](void* data, int idx, const char** out_text) {
-							*out_text = k_skins[idx].name.c_str();
+							*out_text = parser_skins[idx].name.c_str();
 							return true;
-						}, nullptr, k_skins.size(), 10);
-						c_config::get().paint_kit_index_duals = k_skins[c_config::get().paint_kit_vector_index_duals].id;
+						}, nullptr, parser_skins.size(), 10);
+						c_config::get().paint_kit_index_duals = parser_skins[c_config::get().paint_kit_vector_index_duals].id;
 
 						ImGui::Combo(("deagle"), &c_config::get().paint_kit_vector_index_deagle, [](void* data, int idx, const char** out_text) {
-							*out_text = k_skins[idx].name.c_str();
+							*out_text = parser_skins[idx].name.c_str();
 							return true;
-						}, nullptr, k_skins.size(), 10);
-						c_config::get().paint_kit_index_deagle = k_skins[c_config::get().paint_kit_vector_index_deagle].id;
+						}, nullptr, parser_skins.size(), 10);
+						c_config::get().paint_kit_index_deagle = parser_skins[c_config::get().paint_kit_vector_index_deagle].id;
 
 						ImGui::Combo(("revolver"), &c_config::get().paint_kit_vector_index_revolver, [](void* data, int idx, const char** out_text) {
-							*out_text = k_skins[idx].name.c_str();
+							*out_text = parser_skins[idx].name.c_str();
 							return true;
-						}, nullptr, k_skins.size(), 10);
-						c_config::get().paint_kit_index_revolver = k_skins[c_config::get().paint_kit_vector_index_revolver].id;
+						}, nullptr, parser_skins.size(), 10);
+						c_config::get().paint_kit_index_revolver = parser_skins[c_config::get().paint_kit_vector_index_revolver].id;
 
 						break;
 					case 1:
 						ImGui::Combo(("famas"), &c_config::get().paint_kit_vector_index_famas, [](void* data, int idx, const char** out_text) {
-							*out_text = k_skins[idx].name.c_str();
+							*out_text = parser_skins[idx].name.c_str();
 							return true;
-						}, nullptr, k_skins.size(), 10);
-						c_config::get().paint_kit_index_famas = k_skins[c_config::get().paint_kit_vector_index_famas].id;
+						}, nullptr, parser_skins.size(), 10);
+						c_config::get().paint_kit_index_famas = parser_skins[c_config::get().paint_kit_vector_index_famas].id;
 
 						ImGui::Combo(("galil"), &c_config::get().paint_kit_vector_index_galil, [](void* data, int idx, const char** out_text) {
-							*out_text = k_skins[idx].name.c_str();
+							*out_text = parser_skins[idx].name.c_str();
 							return true;
-						}, nullptr, k_skins.size(), 10);
-						c_config::get().paint_kit_index_galil = k_skins[c_config::get().paint_kit_vector_index_galil].id;
+						}, nullptr, parser_skins.size(), 10);
+						c_config::get().paint_kit_index_galil = parser_skins[c_config::get().paint_kit_vector_index_galil].id;
 
 						ImGui::Combo(("m4a4"), &c_config::get().paint_kit_vector_index_m4a4, [](void* data, int idx, const char** out_text) {
-							*out_text = k_skins[idx].name.c_str();
+							*out_text = parser_skins[idx].name.c_str();
 							return true;
-						}, nullptr, k_skins.size(), 10);
-						c_config::get().paint_kit_index_m4a4 = k_skins[c_config::get().paint_kit_vector_index_m4a4].id;
+						}, nullptr, parser_skins.size(), 10);
+						c_config::get().paint_kit_index_m4a4 = parser_skins[c_config::get().paint_kit_vector_index_m4a4].id;
 
 						ImGui::Combo(("m4a1"), &c_config::get().paint_kit_vector_index_m4a1, [](void* data, int idx, const char** out_text) {
-							*out_text = k_skins[idx].name.c_str();
+							*out_text = parser_skins[idx].name.c_str();
 							return true;
-						}, nullptr, k_skins.size(), 10);
-						c_config::get().paint_kit_index_m4a1 = k_skins[c_config::get().paint_kit_vector_index_m4a1].id;
+						}, nullptr, parser_skins.size(), 10);
+						c_config::get().paint_kit_index_m4a1 = parser_skins[c_config::get().paint_kit_vector_index_m4a1].id;
 
 						ImGui::Combo(("ak47"), &c_config::get().paint_kit_vector_index_ak47, [](void* data, int idx, const char** out_text) {
-							*out_text = k_skins[idx].name.c_str();
+							*out_text = parser_skins[idx].name.c_str();
 							return true;
-						}, nullptr, k_skins.size(), 10);
-						c_config::get().paint_kit_index_ak47 = k_skins[c_config::get().paint_kit_vector_index_ak47].id;
+						}, nullptr, parser_skins.size(), 10);
+						c_config::get().paint_kit_index_ak47 = parser_skins[c_config::get().paint_kit_vector_index_ak47].id;
 
 						ImGui::Combo(("sg 553"), &c_config::get().paint_kit_vector_index_sg553, [](void* data, int idx, const char** out_text) {
-							*out_text = k_skins[idx].name.c_str();
+							*out_text = parser_skins[idx].name.c_str();
 							return true;
-						}, nullptr, k_skins.size(), 10);
-						c_config::get().paint_kit_index_sg553 = k_skins[c_config::get().paint_kit_vector_index_sg553].id;
+						}, nullptr, parser_skins.size(), 10);
+						c_config::get().paint_kit_index_sg553 = parser_skins[c_config::get().paint_kit_vector_index_sg553].id;
 
 						ImGui::Combo(("aug"), &c_config::get().paint_kit_vector_index_aug, [](void* data, int idx, const char** out_text) {
-							*out_text = k_skins[idx].name.c_str();
+							*out_text = parser_skins[idx].name.c_str();
 							return true;
-						}, nullptr, k_skins.size(), 10);
-						c_config::get().paint_kit_index_aug = k_skins[c_config::get().paint_kit_vector_index_aug].id;
+						}, nullptr, parser_skins.size(), 10);
+						c_config::get().paint_kit_index_aug = parser_skins[c_config::get().paint_kit_vector_index_aug].id;
 
 						break;
 					case 2:
 						ImGui::Combo(("ssg08"), &c_config::get().paint_kit_vector_index_ssg08, [](void* data, int idx, const char** out_text) {
-							*out_text = k_skins[idx].name.c_str();
+							*out_text = parser_skins[idx].name.c_str();
 							return true;
-						}, nullptr, k_skins.size(), 10);
-						c_config::get().paint_kit_index_ssg08 = k_skins[c_config::get().paint_kit_vector_index_ssg08].id;
+						}, nullptr, parser_skins.size(), 10);
+						c_config::get().paint_kit_index_ssg08 = parser_skins[c_config::get().paint_kit_vector_index_ssg08].id;
 
 						ImGui::Combo(("awp"), &c_config::get().paint_kit_vector_index_awp, [](void* data, int idx, const char** out_text) {
-							*out_text = k_skins[idx].name.c_str();
+							*out_text = parser_skins[idx].name.c_str();
 							return true;
-						}, nullptr, k_skins.size(), 10);
-						c_config::get().paint_kit_index_awp = k_skins[c_config::get().paint_kit_vector_index_awp].id;
+						}, nullptr, parser_skins.size(), 10);
+						c_config::get().paint_kit_index_awp = parser_skins[c_config::get().paint_kit_vector_index_awp].id;
 
 						ImGui::Combo(("scar20"), &c_config::get().paint_kit_vector_index_scar, [](void* data, int idx, const char** out_text) {
-							*out_text = k_skins[idx].name.c_str();
+							*out_text = parser_skins[idx].name.c_str();
 							return true;
-						}, nullptr, k_skins.size(), 10);
-						c_config::get().paint_kit_index_scar = k_skins[c_config::get().paint_kit_vector_index_scar].id;
+						}, nullptr, parser_skins.size(), 10);
+						c_config::get().paint_kit_index_scar = parser_skins[c_config::get().paint_kit_vector_index_scar].id;
 
 						ImGui::Combo(("g3sg1"), &c_config::get().paint_kit_vector_index_g3sg1, [](void* data, int idx, const char** out_text) {
-							*out_text = k_skins[idx].name.c_str();
+							*out_text = parser_skins[idx].name.c_str();
 							return true;
-						}, nullptr, k_skins.size(), 10);
-						c_config::get().paint_kit_index_g3sg1 = k_skins[c_config::get().paint_kit_vector_index_g3sg1].id;
+						}, nullptr, parser_skins.size(), 10);
+						c_config::get().paint_kit_index_g3sg1 = parser_skins[c_config::get().paint_kit_vector_index_g3sg1].id;
 
 						break;
 					case 3:

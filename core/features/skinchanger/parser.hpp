@@ -8,6 +8,11 @@ struct paint_kit {
 		return name < other.name;
 	}
 };
-extern std::vector<paint_kit> k_skins;
-extern std::vector<paint_kit> k_gloves;
-extern void initialize_kits();
+
+class c_kit_parser : public singleton <c_kit_parser> {
+public:
+	void setup();
+};
+
+extern std::vector<paint_kit> parser_skins;
+extern std::vector<paint_kit> parser_gloves;

@@ -16,7 +16,7 @@
 #include "../features/misc/logs.hpp"
 #include "../features/misc/events.hpp"
 #include "../features/visuals/sound.hpp"
-#include "../features/skinchanger/kit_parser.hpp"
+#include "../features/skinchanger/parser.hpp"
 
 std::unique_ptr<vmt_hook> hooks::client_hook;
 std::unique_ptr<vmt_hook> hooks::clientmode_hook;
@@ -87,7 +87,7 @@ void hooks::initialize() {
 	interfaces::console->get_convar("viewmodel_offset_z")->callbacks.set_size(false);
 
 	hooked_events.setup();
-	initialize_kits();
+	c_kit_parser::get().setup();
 
 	printf("Hooks initialized!\n");
 }
