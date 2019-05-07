@@ -9127,6 +9127,9 @@ static void ColorPickerOptionsPopup(ImGuiColorEditFlags flags, float* ref_col) {
 // See enum ImGuiColorEditFlags_ for available options. e.g. Only access 3 floats if ImGuiColorEditFlags_NoAlpha flag is set.
 // With typical options: Left-click on colored square to open color picker. Right-click to open option menu. CTRL-Click over input fields to edit them and TAB to go to next item.
 bool ImGui::ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flags) {
+	ImGui::SameLine();
+	ImGui::SetCursorPos(ImVec2(ImGui::GetWindowSize().x - 32.0f - ImGui::GetStyle().FramePadding.x * 2.0f, ImGui::GetCursorPosY() + 1));
+
 	ImGui::GetStyle().WindowPadding = ImVec2(8, 8);
 
 	ImGuiWindow* window = GetCurrentWindow();

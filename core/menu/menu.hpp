@@ -108,9 +108,8 @@ public:
 	void apply_fonts() {
 		ImGui::CreateContext();
 
-		Main = ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 18);
-		MainCaps = ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\segoeuil.ttf", 24);
-		Menu = ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Verdana.ttf", 12);
+		font_main = ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 18);
+		font_menu = ImGui::GetIO().Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Verdana.ttf", 12);
 	}
 
 	void __stdcall end_present(IDirect3DDevice9* device) {
@@ -166,9 +165,9 @@ public:
 	void __stdcall post_render() {
 		ImGui_ImplDX9_NewFrame();
 	}
-	ImFont* Main;
-	ImFont* Menu;
-	ImFont* MainCaps;
+	ImFont* font_main;
+	ImFont* font_menu;
+	ImFont* font_main_caps;
 	bool opened = false;
 private:
 	ImDrawData _drawData;

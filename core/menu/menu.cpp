@@ -6,48 +6,38 @@
 #include "../features/skinchanger/kit_parser.hpp"
 
 #define UNLEN 256
-
 IDirect3DStateBlock9 *state_block;
-ImFont* Main;
-ImFont* MainCaps;
-ImFont* Menu;
-
 bool reverse = false;
 int offset = 0;
 bool show_popup = false;
 static bool save_config = false;
 static bool load_config = false;
 
-namespace ImGui {
-	void ColorPickerSpacing() {
-		ImGui::SameLine();
-		ImGui::SetCursorPos(ImVec2(ImGui::GetWindowSize().x - 32.0f - ImGui::GetStyle().FramePadding.x * 2.0f, ImGui::GetCursorPosY() + 1));
-	}
-
-	long GetMils() {
+namespace gui {
+	long get_mils() {
 		auto duration = std::chrono::system_clock::now().time_since_epoch();
 		return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
 	}
 
-	void Popup(const char* text, int onScreenMils, bool* done) {
+	void begin_popup(const char* text, int onScreenMils, bool* done) {
 		if (!done)
 			show_popup = true;
 
 		ImGuiIO &io = ImGui::GetIO();
 		ImGuiStyle& style = ImGui::GetStyle();
-		int Wd = io.DisplaySize.x;
+		int width = io.DisplaySize.x;
 		static long oldTime = -1;
-		ImGui::SetNextWindowPos(ImVec2(Wd - offset, 100));
+		ImGui::SetNextWindowPos(ImVec2(width - offset, 100));
 		style.WindowMinSize = ImVec2(100.f, 20.f);
 		ImGui::Begin("##PopUpWindow", &show_popup, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
 		ImVec2 p = ImGui::GetCursorScreenPos();
 
 		ImGui::GetWindowDrawList()->AddRectFilledMultiColor(ImVec2(p.x - 15, p.y - 13), ImVec2(p.x + ImGui::GetWindowWidth(), p.y - 16), ImColor(167, 24, 71, 255), ImColor(58, 31, 87, 255), ImColor(58, 31, 87, 255), ImColor(167, 24, 71, 255));
 
-		long currentTime_ms = GetMils();
+		long current_time_ms = get_mils();
 
-		ImVec2 txtSz = ImGui::CalcTextSize(text);
-		ImGui::SetCursorPosY(ImGui::GetWindowHeight() / 2 - txtSz.y / 2);
+		ImVec2 text_size = ImGui::CalcTextSize(text);
+		ImGui::SetCursorPosY(ImGui::GetWindowHeight() / 2 - text_size.y / 2);
 		ImGui::Text(text);
 
 		if (!reverse) {
@@ -55,11 +45,11 @@ namespace ImGui {
 				offset += (ImGui::GetWindowWidth() + 5) * ((1000.0f / ImGui::GetIO().Framerate) / 100);
 
 			if (offset >= ImGui::GetWindowWidth() && oldTime == -1) {
-				oldTime = currentTime_ms;
+				oldTime = current_time_ms;
 			}
 		}
 
-		if (currentTime_ms - oldTime >= onScreenMils && oldTime != -1) // close after x mils
+		if (current_time_ms - oldTime >= onScreenMils && oldTime != -1) // close after x mils
 			reverse = true;
 
 		if (reverse) {
@@ -92,39 +82,28 @@ void c_menu::run() {
 			ImVec2 p = ImGui::GetCursorScreenPos();
 			ImColor c = ImColor(32, 114, 247);
 
-			//title bar
 			ImGui::GetWindowDrawList()->AddRectFilled(ImVec2(p.x, p.y + 30), ImVec2(p.x + ImGui::GetWindowWidth(), p.y - 3), ImColor(30, 30, 39));
-			//draw gradient bellow title bar
 			ImGui::GetWindowDrawList()->AddRectFilledMultiColor(ImVec2(p.x, p.y + 32), ImVec2(p.x + ImGui::GetWindowWidth(), p.y + +30), ImColor(167, 24, 71, 255), ImColor(58, 31, 87, 255), ImColor(58, 31, 87, 255), ImColor(167, 24, 71, 255));
-			//push font for window stuff
-			ImGui::PushFont(Menu);
-			//set cheat name position
-			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7); //góra, dół
-			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 7); //lewo prawo
-			//render cheat name
+			ImGui::PushFont(font_menu);
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 7); 
+			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 7); 
 			ImGui::Text("aristois.me");
 			ImGui::SameLine();
 
-			//set tabs position
-			ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 9); //góra, dół
-			//render tabs
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 9);
 			if (ImGui::ButtonT("legit", ImVec2(40, 30), page, 0, false, false)) page = 0; ImGui::SameLine(0, 0);
 			if (ImGui::ButtonT("visuals", ImVec2(40, 30), page, 1, false, false)) page = 1; ImGui::SameLine(0, 0);
 			if (ImGui::ButtonT("misc", ImVec2(40, 30), page, 2, false, false)) page = 2; ImGui::SameLine(0, 0);
 			if (ImGui::ButtonT("skins", ImVec2(40, 30), page, 3, false, false)) page = 3; ImGui::SameLine(0, 0);
 			if (ImGui::ButtonT("config", ImVec2(40, 30), page, 4, false, false)) page = 4; ImGui::SameLine(0, 0);
-			//pop window font
 			ImGui::PopFont();
 
-			ImGui::PushFont(Menu);
-			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 45); //góra, dół
-			ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 222); //lewo prawo
+			ImGui::PushFont(font_menu);
+			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 45);
+			ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 222); 
 
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(16, 16));
-
-			//push window color for child
 			ImGui::PushStyleColor(ImGuiCol_ChildWindowBg, ImVec4(30 / 255.f, 30 / 255.f, 39 / 255.f, 1.0f));
-			//push border color for child
 			ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0 / 255.f, 0 / 255.f, 0 / 255.f, 0.1f));
 
 			if (c_config::get().visuals_preview) {
@@ -170,7 +149,7 @@ void c_menu::run() {
 					if (ImGui::ButtonT("smg", ImVec2(50, 30), test, 3, false, false)) test = 3; ImGui::SameLine(0, 0); 
 					if (ImGui::ButtonT("heavy", ImVec2(50, 30), test, 4, false, false)) test = 4; 
 
-					ImGui::PushFont(Menu);
+					ImGui::PushFont(font_menu);
 
 					switch (test) {
 					case 0:
@@ -230,35 +209,26 @@ void c_menu::run() {
 				break;
 			case 1:
 				ImGui::Columns(2, NULL, false);
-
 				ImGui::Dummy(ImVec2(0, -2)); ImGui::SameLine();
 				ImGui::Dummy(ImVec2(0, 0)); ImGui::SameLine();
-
 				ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(16, 16));
-				//push window color for child
 				ImGui::PushStyleColor(ImGuiCol_ChildWindowBg, ImVec4(30 / 255.f, 30 / 255.f, 39 / 255.f, 1.0f));
-				//push border color for child
 				ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0 / 255.f, 0 / 255.f, 0 / 255.f, 0.1f));
 
-				ImGui::BeginChild("player", ImVec2(279, 268), true);
-				{
+				ImGui::BeginChild("player", ImVec2(279, 268), true); {
 					ImGui::Checkbox("active", &c_config::get().visuals_enabled);
 					if (c_config::get().visuals_enabled) {
 						ImGui::Checkbox("team", &c_config::get().visuals_team_check);
 					}
 					ImGui::Checkbox("name", &c_config::get().player_name);
-					ImGui::ColorPickerSpacing();
 					ImGui::ColorEdit4("name color", c_config::get().clr_name, ImGuiColorEditFlags_NoInputs);
 					ImGui::Checkbox("box", &c_config::get().player_box);
-					ImGui::ColorPickerSpacing();
 					ImGui::ColorEdit4("box color", c_config::get().clr_box, ImGuiColorEditFlags_NoInputs);
 					ImGui::Checkbox("health", &c_config::get().player_health);
 					ImGui::Checkbox("weapon", &c_config::get().player_weapon);
-					ImGui::ColorPickerSpacing();
 					ImGui::ColorEdit4("weapon color", c_config::get().clr_weapon, ImGuiColorEditFlags_NoInputs);
 
-					if (ImGui::BeginCombo("flags", "...", ImVec2(0, 105)))
-					{
+					if (ImGui::BeginCombo("flags", "...", ImVec2(0, 105))) {
 						ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 8);
 						ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 4);
 						ImGui::Selectable(("armor"), &c_config::get().player_flags_armor, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups);
@@ -274,7 +244,6 @@ void c_menu::run() {
 						ImGui::EndCombo();
 					}
 					ImGui::Checkbox("footstep", &c_config::get().sound_footstep);
-					ImGui::ColorPickerSpacing();
 					ImGui::ColorEdit4("footstep color", c_config::get().clr_footstep, ImGuiColorEditFlags_NoInputs);
 					ImGui::Checkbox("skeleton", &c_config::get().skeleton);
 					ImGui::Checkbox("backtrack skeleton", &c_config::get().backtrack_skeleton);
@@ -287,21 +256,18 @@ void c_menu::run() {
 				ImGui::Dummy(ImVec2(0, 0)); ImGui::SameLine();
 				ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(16, 16));
 
-				ImGui::BeginChild("effects", ImVec2(279, 267), true);
-				{
+				ImGui::BeginChild("effects", ImVec2(279, 267), true); {
 					ImGui::Checkbox("force crosshair", &c_config::get().force_crosshair);
 					ImGui::SliderInt("viewmodel field of view", &c_config::get().viewmodel_fov, 0, 135);
 					ImGui::SliderInt("field of view", &c_config::get().fov, 0, 60);
 					ImGui::Checkbox("night mode", &c_config::get().nightmode);
-					ImGui::ColorPickerSpacing();
 					ImGui::ColorEdit4("sky color", c_config::get().clr_sky, ImGuiColorEditFlags_NoInputs);
 					if (c_config::get().nightmode) {
 						ImGui::SliderInt("brightness", &c_config::get().nightmode_brightness, 0, 100);
 					}
 
 
-					if (ImGui::BeginCombo("removals", "...", ImVec2(0, 105)))
-					{
+					if (ImGui::BeginCombo("removals", "...", ImVec2(0, 105))) {
 						ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 8);
 						ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 4);
 						ImGui::Selectable(("smoke"), &c_config::get().remove_smoke, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups);
@@ -316,8 +282,7 @@ void c_menu::run() {
 						ImGui::EndCombo();
 					}
 
-					if (ImGui::BeginCombo("world", "...", ImVec2(0, 105)))
-					{
+					if (ImGui::BeginCombo("world", "...", ImVec2(0, 105))) {
 						ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 8);
 						ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 4);
 						ImGui::Selectable(("planted bomb"), &c_config::get().bomb_planted, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups);
@@ -336,26 +301,15 @@ void c_menu::run() {
 
 				ImGui::NextColumn();
 
-				ImGui::BeginChild("glow", ImVec2(279, 268), true);
-				{
+				ImGui::BeginChild("glow", ImVec2(279, 268), true); {
 					ImGui::Checkbox("active", &c_config::get().visuals_glow);
 					ImGui::Checkbox("enemy", &c_config::get().visuals_glow_enemy);
-					ImGui::ColorPickerSpacing();
 					ImGui::ColorEdit4("glow color", c_config::get().clr_glow, ImGuiColorEditFlags_NoInputs);
-
-
 					ImGui::Checkbox("teammate", &c_config::get().visuals_glow_team);
-					ImGui::ColorPickerSpacing();
 					ImGui::ColorEdit4("glow color team", c_config::get().clr_glow_team, ImGuiColorEditFlags_NoInputs);
-
-
 					ImGui::Checkbox("planted bomb", &c_config::get().visuals_glow_planted);
-					ImGui::ColorPickerSpacing();
 					ImGui::ColorEdit4("glow color planted", c_config::get().clr_glow_planted, ImGuiColorEditFlags_NoInputs);
-
-
 					ImGui::Checkbox("dropped weapons", &c_config::get().visuals_glow_weapons);
-					ImGui::ColorPickerSpacing();
 					ImGui::ColorEdit4("glow color weapons", c_config::get().clr_glow_dropped, ImGuiColorEditFlags_NoInputs);
 
 				}
@@ -365,18 +319,12 @@ void c_menu::run() {
 
 				ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 8);
 
-				ImGui::BeginChild("chams", ImVec2(279, 267), true);
-				{
+				ImGui::BeginChild("chams", ImVec2(279, 267), true); {
 					ImGui::Combo("chams type", &c_config::get().vis_chams_type, "textured\0flat\0metallic\0pulsating");
-
 					ImGui::Checkbox("enemy", &c_config::get().vis_chams_vis);
-					ImGui::ColorPickerSpacing();
 					ImGui::ColorEdit4("enemy color", c_config::get().clr_chams_vis, ImGuiColorEditFlags_NoInputs);
-
 					ImGui::Checkbox("enemy (behind wall)", &c_config::get().vis_chams_invis);
-					ImGui::ColorPickerSpacing();
 					ImGui::ColorEdit4("enemy (behind wall) color", c_config::get().clr_chams_invis, ImGuiColorEditFlags_NoInputs);
-
 					ImGui::Checkbox("backtrack", &c_config::get().backtrack_visualize);
 				}
 				ImGui::EndChild(true);
@@ -388,13 +336,10 @@ void c_menu::run() {
 				break;
 			case 2:
 				ImGui::Columns(2, NULL, false);
-
 				ImGui::Dummy(ImVec2(0, -2)); ImGui::SameLine();
 				ImGui::Dummy(ImVec2(0, 0)); ImGui::SameLine();
 				ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(16, 16));
-				//push window color for child
 				ImGui::PushStyleColor(ImGuiCol_ChildWindowBg, ImVec4(30 / 255.f, 30 / 255.f, 39 / 255.f, 1.0f));
-				//push border color for child
 				ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0 / 255.f, 0 / 255.f, 0 / 255.f, 0.1f));
 
 				ImGui::BeginChild("misc", ImVec2(279, 543), true); {
@@ -402,36 +347,14 @@ void c_menu::run() {
 					ImGui::Checkbox("clantag spammer", &c_config::get().clan_tag);
 					ImGui::Checkbox("engine radar", &c_config::get().radar);
 
-					//static std::string preview = "";
-					//if (ImGui::BeginCombo("logs", preview.c_str(), ImVec2(0, 65))) {
 					if (ImGui::BeginCombo("logs", "...", ImVec2(0, 65))) {
-						//std::vector<std::string> vector;
-						//preview = "";
-
 						ImGui::SetCursorPosY(ImGui::GetCursorPosY() - 8);
 						ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 4);
 						ImGui::Selectable(("player hurt"), &c_config::get().logs_player_hurt, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups);
-						//if (c_config::get().logs_player_hurt)
-						//	vector.push_back("player hurt");
 						ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 4);
 						ImGui::Selectable(("player bought"), &c_config::get().logs_player_bought, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups);
-						//if (c_config::get().logs_player_bought)
-						//	vector.push_back("player bought");
 						ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 4);
 						ImGui::Selectable(("config system"), &c_config::get().logs_config_system, ImGuiSelectableFlags_::ImGuiSelectableFlags_DontClosePopups);
-						//if (c_config::get().logs_config_system)
-						//	vector.push_back("config system");
-
-						/*for (size_t i = 0; i < vector.size(); i++)
-						{
-							if (vector.size() == 1)
-								preview += vector.at(i);
-							else if (!(i == vector.size() - 1))
-								preview += vector.at(i) + ", ";
-							else
-								preview += vector.at(i);
-						} */
-
 						ImGui::EndCombo();
 					}
 
@@ -491,23 +414,17 @@ void c_menu::run() {
 				break;
 			case 3:
 				ImGui::Columns(2, NULL, false);
-
 				ImGui::Dummy(ImVec2(0, -2)); ImGui::SameLine();
 				ImGui::Dummy(ImVec2(0, 0)); ImGui::SameLine();
-
 				ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(16, 16));
-				//push window color for child
 				ImGui::PushStyleColor(ImGuiCol_ChildWindowBg, ImVec4(30 / 255.f, 30 / 255.f, 39 / 255.f, 1.0f));
-				//push border color for child
 				ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0 / 255.f, 0 / 255.f, 0 / 255.f, 0.1f));
-				ImGui::BeginChild("knife", ImVec2(279, 268), true);
-				{
+				ImGui::BeginChild("knife", ImVec2(279, 268), true); {
 					ImGui::Checkbox("enable", &c_config::get().skinchanger_enable);
 					ImGui::Combo("knife", &c_config::get().knife_model, "default\0bayonet\0m9\0karambit\0bowie\0butterfly\0falchion\0flip\0gut\0huntsman\0shaddow daggers\0navaja\0stiletto\0talon\0ursus");
 					ImGui::Combo("condition", &c_config::get().knife_wear, "factory new\0minimal wear\0field-tested\0well-worn\0battle-scarred");
 
-					ImGui::Combo(("skin"), &c_config::get().paint_kit_vector_index_knife, [](void* data, int idx, const char** out_text)
-					{
+					ImGui::Combo(("skin"), &c_config::get().paint_kit_vector_index_knife, [](void* data, int idx, const char** out_text) {
 						*out_text = k_skins[idx].name.c_str();
 						return true;
 					}, nullptr, k_skins.size(), 10);
@@ -521,8 +438,7 @@ void c_menu::run() {
 				ImGui::Dummy(ImVec2(0, 0)); ImGui::SameLine();
 				ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(16, 16));
 
-				ImGui::BeginChild("settings", ImVec2(279, 267), true);
-				{
+				ImGui::BeginChild("settings", ImVec2(279, 267), true); {
 					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 18);
 					if (ImGui::Button("force update", ImVec2(84, 18))) {
 						utilities::force_update();
@@ -533,83 +449,72 @@ void c_menu::run() {
 
 				ImGui::NextColumn();
 
-				ImGui::BeginChild("weapons", ImVec2(279, 543), true);
-				{
+				ImGui::BeginChild("weapons", ImVec2(279, 543), true); {
 					static int weapons_page = 0;
-					if (ImGui::ButtonT("pistol", ImVec2(50, 30), weapons_page, 0, false, ImColor(0, 0, 0))) weapons_page = 0; ImGui::SameLine(0, 0); //pistol
-					if (ImGui::ButtonT("rifle", ImVec2(50, 30), weapons_page, 1, false, false)) weapons_page = 1; ImGui::SameLine(0, 0); //rifle
-					if (ImGui::ButtonT("sniper", ImVec2(50, 30), weapons_page, 2, false, false)) weapons_page = 2; ImGui::SameLine(0, 0); //sniper
-					if (ImGui::ButtonT("smg", ImVec2(50, 30), weapons_page, 3, false, false)) weapons_page = 3; ImGui::SameLine(0, 0); //mg
-					if (ImGui::ButtonT("heavy", ImVec2(50, 30), weapons_page, 4, false, false)) weapons_page = 4; //heavy
+					if (ImGui::ButtonT("pistol", ImVec2(50, 30), weapons_page, 0, false, ImColor(0, 0, 0))) weapons_page = 0; ImGui::SameLine(0, 0);
+					if (ImGui::ButtonT("rifle", ImVec2(50, 30), weapons_page, 1, false, false)) weapons_page = 1; ImGui::SameLine(0, 0);
+					if (ImGui::ButtonT("sniper", ImVec2(50, 30), weapons_page, 2, false, false)) weapons_page = 2; ImGui::SameLine(0, 0);
+					if (ImGui::ButtonT("smg", ImVec2(50, 30), weapons_page, 3, false, false)) weapons_page = 3; ImGui::SameLine(0, 0);
+					if (ImGui::ButtonT("heavy", ImVec2(50, 30), weapons_page, 4, false, false)) weapons_page = 4;
 
 					switch (weapons_page) {
 					case 0:
-						ImGui::Combo(("p2000"), &c_config::get().paint_kit_vector_index_p2000, [](void* data, int idx, const char** out_text)
-						{
+						ImGui::Combo(("p2000"), &c_config::get().paint_kit_vector_index_p2000, [](void* data, int idx, const char** out_text) {
 							*out_text = k_skins[idx].name.c_str();
 							return true;
 						}, nullptr, k_skins.size(), 10);
 						c_config::get().paint_kit_index_p2000 = k_skins[c_config::get().paint_kit_vector_index_p2000].id;
 
 
-						ImGui::Combo(("usp-s"), &c_config::get().paint_kit_vector_index_usp, [](void* data, int idx, const char** out_text)
-						{
+						ImGui::Combo(("usp-s"), &c_config::get().paint_kit_vector_index_usp, [](void* data, int idx, const char** out_text) {
 							*out_text = k_skins[idx].name.c_str();
 							return true;
 						}, nullptr, k_skins.size(), 10);
 						c_config::get().paint_kit_index_usp = k_skins[c_config::get().paint_kit_vector_index_usp].id;
 
-						ImGui::Combo(("glock"), &c_config::get().paint_kit_vector_index_glock, [](void* data, int idx, const char** out_text)
-						{
+						ImGui::Combo(("glock"), &c_config::get().paint_kit_vector_index_glock, [](void* data, int idx, const char** out_text) {
 							*out_text = k_skins[idx].name.c_str();
 							return true;
 						}, nullptr, k_skins.size(), 10);
 						c_config::get().paint_kit_index_glock = k_skins[c_config::get().paint_kit_vector_index_glock].id;
 
-						ImGui::Combo(("p250"), &c_config::get().paint_kit_vector_index_p250, [](void* data, int idx, const char** out_text)
-						{
+						ImGui::Combo(("p250"), &c_config::get().paint_kit_vector_index_p250, [](void* data, int idx, const char** out_text) {
 							*out_text = k_skins[idx].name.c_str();
 							return true;
 						}, nullptr, k_skins.size(), 10);
 						c_config::get().paint_kit_index_p250 = k_skins[c_config::get().paint_kit_vector_index_p250].id;
 
-						ImGui::Combo(("five-seven"), &c_config::get().paint_kit_vector_index_fiveseven, [](void* data, int idx, const char** out_text)
-						{
+						ImGui::Combo(("five-seven"), &c_config::get().paint_kit_vector_index_fiveseven, [](void* data, int idx, const char** out_text) {
 							*out_text = k_skins[idx].name.c_str();
 							return true;
 						}, nullptr, k_skins.size(), 10);
 						c_config::get().paint_kit_index_fiveseven = k_skins[c_config::get().paint_kit_vector_index_fiveseven].id;
 
-						ImGui::Combo(("tec9"), &c_config::get().paint_kit_vector_index_tec, [](void* data, int idx, const char** out_text)
-						{
+						ImGui::Combo(("tec9"), &c_config::get().paint_kit_vector_index_tec, [](void* data, int idx, const char** out_text) {
 							*out_text = k_skins[idx].name.c_str();
 							return true;
 						}, nullptr, k_skins.size(), 10);
 						c_config::get().paint_kit_index_tec = k_skins[c_config::get().paint_kit_vector_index_tec].id;
 
-						ImGui::Combo(("cz75a"), &c_config::get().paint_kit_vector_index_cz, [](void* data, int idx, const char** out_text)
-						{
+						ImGui::Combo(("cz75a"), &c_config::get().paint_kit_vector_index_cz, [](void* data, int idx, const char** out_text) {
 							*out_text = k_skins[idx].name.c_str();
 							return true;
 						}, nullptr, k_skins.size(), 10);
 						c_config::get().paint_kit_index_cz = k_skins[c_config::get().paint_kit_vector_index_cz].id;
 
-						ImGui::Combo(("duals"), &c_config::get().paint_kit_vector_index_duals, [](void* data, int idx, const char** out_text)
-						{
+						ImGui::Combo(("duals"), &c_config::get().paint_kit_vector_index_duals, [](void* data, int idx, const char** out_text) {
 							*out_text = k_skins[idx].name.c_str();
 							return true;
 						}, nullptr, k_skins.size(), 10);
 						c_config::get().paint_kit_index_duals = k_skins[c_config::get().paint_kit_vector_index_duals].id;
 
-						ImGui::Combo(("deagle"), &c_config::get().paint_kit_vector_index_deagle, [](void* data, int idx, const char** out_text)
-						{
+						ImGui::Combo(("deagle"), &c_config::get().paint_kit_vector_index_deagle, [](void* data, int idx, const char** out_text) {
 							*out_text = k_skins[idx].name.c_str();
 							return true;
 						}, nullptr, k_skins.size(), 10);
 						c_config::get().paint_kit_index_deagle = k_skins[c_config::get().paint_kit_vector_index_deagle].id;
 
-						ImGui::Combo(("revolver"), &c_config::get().paint_kit_vector_index_revolver, [](void* data, int idx, const char** out_text)
-						{
+						ImGui::Combo(("revolver"), &c_config::get().paint_kit_vector_index_revolver, [](void* data, int idx, const char** out_text) {
 							*out_text = k_skins[idx].name.c_str();
 							return true;
 						}, nullptr, k_skins.size(), 10);
@@ -617,50 +522,43 @@ void c_menu::run() {
 
 						break;
 					case 1:
-						ImGui::Combo(("famas"), &c_config::get().paint_kit_vector_index_famas, [](void* data, int idx, const char** out_text)
-						{
+						ImGui::Combo(("famas"), &c_config::get().paint_kit_vector_index_famas, [](void* data, int idx, const char** out_text) {
 							*out_text = k_skins[idx].name.c_str();
 							return true;
 						}, nullptr, k_skins.size(), 10);
 						c_config::get().paint_kit_index_famas = k_skins[c_config::get().paint_kit_vector_index_famas].id;
 
-						ImGui::Combo(("galil"), &c_config::get().paint_kit_vector_index_galil, [](void* data, int idx, const char** out_text)
-						{
+						ImGui::Combo(("galil"), &c_config::get().paint_kit_vector_index_galil, [](void* data, int idx, const char** out_text) {
 							*out_text = k_skins[idx].name.c_str();
 							return true;
 						}, nullptr, k_skins.size(), 10);
 						c_config::get().paint_kit_index_galil = k_skins[c_config::get().paint_kit_vector_index_galil].id;
 
-						ImGui::Combo(("m4a4"), &c_config::get().paint_kit_vector_index_m4a4, [](void* data, int idx, const char** out_text)
-						{
+						ImGui::Combo(("m4a4"), &c_config::get().paint_kit_vector_index_m4a4, [](void* data, int idx, const char** out_text) {
 							*out_text = k_skins[idx].name.c_str();
 							return true;
 						}, nullptr, k_skins.size(), 10);
 						c_config::get().paint_kit_index_m4a4 = k_skins[c_config::get().paint_kit_vector_index_m4a4].id;
 
-						ImGui::Combo(("m4a1"), &c_config::get().paint_kit_vector_index_m4a1, [](void* data, int idx, const char** out_text)
-						{
+						ImGui::Combo(("m4a1"), &c_config::get().paint_kit_vector_index_m4a1, [](void* data, int idx, const char** out_text) {
 							*out_text = k_skins[idx].name.c_str();
 							return true;
 						}, nullptr, k_skins.size(), 10);
 						c_config::get().paint_kit_index_m4a1 = k_skins[c_config::get().paint_kit_vector_index_m4a1].id;
 
-						ImGui::Combo(("ak47"), &c_config::get().paint_kit_vector_index_ak47, [](void* data, int idx, const char** out_text)
-						{
+						ImGui::Combo(("ak47"), &c_config::get().paint_kit_vector_index_ak47, [](void* data, int idx, const char** out_text) {
 							*out_text = k_skins[idx].name.c_str();
 							return true;
 						}, nullptr, k_skins.size(), 10);
 						c_config::get().paint_kit_index_ak47 = k_skins[c_config::get().paint_kit_vector_index_ak47].id;
 
-						ImGui::Combo(("sg 553"), &c_config::get().paint_kit_vector_index_sg553, [](void* data, int idx, const char** out_text)
-						{
+						ImGui::Combo(("sg 553"), &c_config::get().paint_kit_vector_index_sg553, [](void* data, int idx, const char** out_text) {
 							*out_text = k_skins[idx].name.c_str();
 							return true;
 						}, nullptr, k_skins.size(), 10);
 						c_config::get().paint_kit_index_sg553 = k_skins[c_config::get().paint_kit_vector_index_sg553].id;
 
-						ImGui::Combo(("aug"), &c_config::get().paint_kit_vector_index_aug, [](void* data, int idx, const char** out_text)
-						{
+						ImGui::Combo(("aug"), &c_config::get().paint_kit_vector_index_aug, [](void* data, int idx, const char** out_text) {
 							*out_text = k_skins[idx].name.c_str();
 							return true;
 						}, nullptr, k_skins.size(), 10);
@@ -668,30 +566,25 @@ void c_menu::run() {
 
 						break;
 					case 2:
-
-						ImGui::Combo(("ssg08"), &c_config::get().paint_kit_vector_index_ssg08, [](void* data, int idx, const char** out_text)
-						{
+						ImGui::Combo(("ssg08"), &c_config::get().paint_kit_vector_index_ssg08, [](void* data, int idx, const char** out_text) {
 							*out_text = k_skins[idx].name.c_str();
 							return true;
 						}, nullptr, k_skins.size(), 10);
 						c_config::get().paint_kit_index_ssg08 = k_skins[c_config::get().paint_kit_vector_index_ssg08].id;
 
-						ImGui::Combo(("awp"), &c_config::get().paint_kit_vector_index_awp, [](void* data, int idx, const char** out_text)
-						{
+						ImGui::Combo(("awp"), &c_config::get().paint_kit_vector_index_awp, [](void* data, int idx, const char** out_text) {
 							*out_text = k_skins[idx].name.c_str();
 							return true;
 						}, nullptr, k_skins.size(), 10);
 						c_config::get().paint_kit_index_awp = k_skins[c_config::get().paint_kit_vector_index_awp].id;
 
-						ImGui::Combo(("scar20"), &c_config::get().paint_kit_vector_index_scar, [](void* data, int idx, const char** out_text)
-						{
+						ImGui::Combo(("scar20"), &c_config::get().paint_kit_vector_index_scar, [](void* data, int idx, const char** out_text) {
 							*out_text = k_skins[idx].name.c_str();
 							return true;
 						}, nullptr, k_skins.size(), 10);
 						c_config::get().paint_kit_index_scar = k_skins[c_config::get().paint_kit_vector_index_scar].id;
 
-						ImGui::Combo(("g3sg1"), &c_config::get().paint_kit_vector_index_g3sg1, [](void* data, int idx, const char** out_text)
-						{
+						ImGui::Combo(("g3sg1"), &c_config::get().paint_kit_vector_index_g3sg1, [](void* data, int idx, const char** out_text) {
 							*out_text = k_skins[idx].name.c_str();
 							return true;
 						}, nullptr, k_skins.size(), 10);
@@ -714,17 +607,12 @@ void c_menu::run() {
 
 			case 4:
 				ImGui::Columns(2, NULL, false);
-
 				ImGui::Dummy(ImVec2(0, -2)); ImGui::SameLine();
 				ImGui::Dummy(ImVec2(0, 0)); ImGui::SameLine();
-
 				ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(16, 16));
-				//push window color for child
 				ImGui::PushStyleColor(ImGuiCol_ChildWindowBg, ImVec4(30 / 255.f, 30 / 255.f, 39 / 255.f, 1.0f));
-				//push border color for child
 				ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0 / 255.f, 0 / 255.f, 0 / 255.f, 0.1f));
-				ImGui::BeginChild("config", ImVec2(279, 268), true);
-				{
+				ImGui::BeginChild("config", ImVec2(279, 268), true); {
 					ImGui::Combo("config", &c_config::get().config_selection, "alpha\0beta\0gamma");
 					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 18);
 					if (ImGui::Button("save", ImVec2(84, 18))) {
@@ -757,8 +645,7 @@ void c_menu::run() {
 				ImGui::Dummy(ImVec2(0, 0)); ImGui::SameLine();
 				ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(16, 16));
 
-				ImGui::BeginChild("settings", ImVec2(279, 267), true);
-				{
+				ImGui::BeginChild("settings", ImVec2(279, 267), true); {
 					ImGui::Combo("keybinds", &c_config::get().keybinds_selection, "edge jump\0load config: alpha\0load config: beta\0load config: gamma");
 
 					if (c_config::get().keybinds_selection == 0) {
@@ -769,8 +656,7 @@ void c_menu::run() {
 
 				ImGui::NextColumn();
 
-				ImGui::BeginChild("info", ImVec2(279, 543), true);
-				{
+				ImGui::BeginChild("info", ImVec2(279, 543), true); {
 					char buffer[UNLEN + 1];
 					DWORD size;
 					size = sizeof(buffer);
@@ -801,21 +687,21 @@ void c_menu::run() {
 }
 
 void c_menu::run_popup() {
-	ImGui::PushFont(Menu);
+	ImGui::PushFont(font_menu);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(16, 16));
 	ImGui::PushStyleColor(ImGuiCol_ChildWindowBg, ImVec4(30 / 255.f, 30 / 255.f, 39 / 255.f, 1.0f));
 	ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0 / 255.f, 0 / 255.f, 0 / 255.f, 0.1f));
 
 	if (save_config) {
 		bool done = false;
-		ImGui::Popup("config saved.", 2000, &done);
+		gui::begin_popup("config saved.", 2000, &done);
 		if (done)
 			save_config = false;
 	}
 
 	if (load_config) {
 		bool done = false;
-		ImGui::Popup("config loaded.", 2000, &done);
+		gui::begin_popup("config loaded.", 2000, &done);
 		if (done)
 			load_config = false;
 	}
@@ -832,8 +718,7 @@ void c_menu::run_visuals_preview() {
 
 	ImGui::SetNextWindowSize(ImVec2(235, 400));
 
-	ImGui::Begin("ESP Preview", &enabled, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_ShowBorders | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar);
-	{
+	ImGui::Begin("ESP Preview", &enabled, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_ShowBorders | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar); {
 		const auto cur_window = ImGui::GetCurrentWindow();
 		const ImVec2 w_pos = cur_window->Pos;
 
@@ -869,18 +754,15 @@ void c_menu::run_visuals_preview() {
 			info.emplace_back(esp_info_s("hk", color(255, 255, 255, 255), RIGHT));
 
 
-		for (auto render : info)
-		{
+		for (auto render : info) {
 			const auto text_size = ImGui::CalcTextSize(render.f_name.c_str());
 
 			auto pos = ImVec2(w_pos.x + 205, w_pos.y + 60);
 
-			if (render.f_position == CENTER_DOWN)
-			{
+			if (render.f_position == CENTER_DOWN) {
 				pos = ImVec2(w_pos.x + (240 / 2) - text_size.x / 2, pos.y + 315 - text_size.y);
 			}
-			else if (render.f_position == CENTER_UP)
-			{
+			else if (render.f_position == CENTER_UP) {
 				pos = ImVec2(w_pos.x + (240 / 2) - text_size.x / 2, pos.y - 5 - text_size.y);
 			}
 
