@@ -1,7 +1,6 @@
 #include "visuals.hpp"
 #include "../../../dependencies/common_includes.hpp"
 #include "../backtrack/backtrack.hpp"
-#include "../../menu/config.h"
 
 void c_visuals::run() {
 	auto local_player = reinterpret_cast<player_t*>(interfaces::entity_list->get_client_entity(interfaces::engine->get_local_player()));

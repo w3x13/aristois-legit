@@ -1,7 +1,6 @@
 ﻿#include "menu.hpp"
 #include "imgui/imgui.h"
 #include "imgui/imgui_internal.h"
-#include "config saving/config saving.h"
 #include "../features/misc/logs.hpp"
 #include "../features/skinchanger/parser.hpp"
 
@@ -13,7 +12,20 @@ bool show_popup = false;
 static bool save_config = false;
 static bool load_config = false;
 
-namespace gui {
+namespace ImGui {
+	static auto vector_getter = [](void* vec, int idx, const char** out_text) {
+		auto& vector = *static_cast<std::vector<std::string>*>(vec);
+		if (idx < 0 || idx >= static_cast<int>(vector.size())) { return false; }
+		*out_text = vector.at(idx).c_str();
+		return true;
+	};
+
+	bool combo_array(const char* label, int* currIndex, std::vector<std::string>& values) {
+		if (values.empty()) { return false; }
+		return Combo(label, currIndex, vector_getter,
+			static_cast<void*>(&values), values.size());
+	}
+
 	long get_mils() {
 		auto duration = std::chrono::system_clock::now().time_since_epoch();
 		return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
@@ -613,30 +625,48 @@ void c_menu::run() {
 				ImGui::PushStyleColor(ImGuiCol_ChildWindowBg, ImVec4(30 / 255.f, 30 / 255.f, 39 / 255.f, 1.0f));
 				ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0 / 255.f, 0 / 255.f, 0 / 255.f, 0.1f));
 				ImGui::BeginChild("config", ImVec2(279, 268), true); {
-					ImGui::Combo("config", &c_config::get().config_selection, "alpha\0beta\0gamma");
+					static char entered_config_name[64] = { 0 };
 					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 18);
-					if (ImGui::Button("save", ImVec2(84, 18))) {
-						c_config_saving::get().save();
-						save_config = true;
+					ImGui::InputText(("##CFG"), entered_config_name, 64);
+					static int selected;
+					std::string config;
+					std::vector<std::string> configs = c_config::get().get_configs();
+					if (configs.size() > 0) {
+						ImGui::combo_array(("configs"), &selected, configs);
+						config = configs[c_config::get().counts];
+					}
+					c_config::get().counts = selected;
 
-						if (c_config::get().logs_config_system) {
-							utilities::console_warning("[config system] ");
-							interfaces::console->console_printf("config saved. \n");
-							c_event_logs::get().add("config saved.", color(167, 255, 255, 255));
+					if (configs.size() > 0) {
+						ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 18);
+						if (ImGui::Button(("load"), ImVec2(175, 20))) {
+							c_config::get().load_config(config);
+						}
+					}
+					if (configs.size() >= 1) {
+						ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 18);
+						if (ImGui::Button(("save"), ImVec2(175, 20))) {
+							c_config::get().save_config(config);
+
+						}
+					}
+					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 18);
+					if (ImGui::Button(("create"), ImVec2(175, 20))) {
+						std::string config_file_name = entered_config_name;
+						if (config_file_name.size() < 1) {
+							config_file_name = ("settings");
+						}
+						c_config::get().create_config(config_file_name);
+
+					}
+					if (config.size() >= 1) {
+						ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 18);
+						if (ImGui::Button(("delete"), ImVec2(175, 20))) {
+							c_config::get().remove_config(config);
+
 						}
 					}
 
-					ImGui::SameLine();
-					if (ImGui::Button("load", ImVec2(83, 18))) {
-						c_config_saving::get().load();
-						load_config = true;
-
-						if (c_config::get().logs_config_system) {
-							utilities::console_warning("[config system] ");
-							interfaces::console->console_printf("config loaded. \n");
-							c_event_logs::get().add("config loaded.", color(167, 255, 255, 255));
-						}
-					}
 				}
 				ImGui::EndChild(true);
 
@@ -646,7 +676,7 @@ void c_menu::run() {
 				ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(16, 16));
 
 				ImGui::BeginChild("settings", ImVec2(279, 267), true); {
-					ImGui::Combo("keybinds", &c_config::get().keybinds_selection, "edge jump\0load config: alpha\0load config: beta\0load config: gamma");
+					ImGui::Combo("keybinds", &c_config::get().keybinds_selection, "edge jump");
 
 					if (c_config::get().keybinds_selection == 0) {
 						ImGui::Hotkey("##edge jump key", &c_config::get().edge_jump_key, ImVec2(100, 20));
@@ -694,14 +724,14 @@ void c_menu::run_popup() {
 
 	if (save_config) {
 		bool done = false;
-		gui::begin_popup("config saved.", 2000, &done);
+		ImGui::begin_popup("config saved.", 2000, &done);
 		if (done)
 			save_config = false;
 	}
 
 	if (load_config) {
 		bool done = false;
-		gui::begin_popup("config loaded.", 2000, &done);
+		ImGui::begin_popup("config loaded.", 2000, &done);
 		if (done)
 			load_config = false;
 	}

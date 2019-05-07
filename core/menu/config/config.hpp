@@ -1,11 +1,18 @@
-#pragma once
-#include "../../dependencies/utilities/singleton.hpp"
-#include "../../source-sdk/misc/color.hpp"
-class c_config : public singleton< c_config > {
-private:
+#include <Windows.h>
+#include <string>
+#include <vector>
+#include "../../../dependencies/utilities/singleton.hpp"
 
+class c_config : public singleton< c_config > {
 public:
-	bool backtrack = false;	
+	int counts;
+	bool save_config(std::string file_name);
+	bool load_config(std::string file_name);
+	bool remove_config(std::string file_name);
+	void create_config(std::string name);
+	std::vector<std::string> get_configs();
+
+	bool backtrack = false;
 	bool aim_at_backtrack = false;
 	bool backtrack_visualize = false;
 	bool aim_enabled = false;
@@ -174,4 +181,5 @@ public:
 	int paint_kit_index_scar = 0;
 	int paint_kit_vector_index_g3sg1 = 0;
 	int paint_kit_index_g3sg1 = 0;
+
 };
