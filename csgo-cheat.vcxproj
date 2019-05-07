@@ -123,7 +123,7 @@
     <ClCompile Include="source-sdk\math\view_matrix.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="core\features\aimbot\aimbot.h" />
+    <ClInclude Include="core\features\aimbot\aimbot.hpp" />
     <ClInclude Include="core\features\backtrack\backtrack.hpp" />
     <ClInclude Include="core\features\misc\logs.hpp">
       <DeploymentContent>true</DeploymentContent>
@@ -132,10 +132,10 @@
     <ClInclude Include="core\features\misc\hitmarker.hpp" />
     <ClInclude Include="core\features\misc\misc.hpp" />
     <ClInclude Include="core\features\misc\prediction.hpp" />
-    <ClInclude Include="core\features\misc\movement.h" />
+    <ClInclude Include="core\features\misc\movement.hpp" />
     <ClInclude Include="core\features\skinchanger\parser.hpp" />
-    <ClInclude Include="core\features\visuals\nightmode.h" />
-    <ClInclude Include="core\features\skinchanger\skinchanger.h" />
+    <ClInclude Include="core\features\visuals\nightmode.hpp" />
+    <ClInclude Include="core\features\skinchanger\skinchanger.hpp" />
     <ClInclude Include="core\features\visuals\sound.hpp" />
     <ClInclude Include="core\features\visuals\visuals.hpp" />
     <ClInclude Include="core\hooks\hooks.hpp" />

@@ -1,6 +1,6 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
-#include "aimbot.h"
+#include "aimbot.hpp"
 #include "../../../source-sdk/sdk.hpp"
 #include "../../../source-sdk/math/vector2d.hpp"
 #include "../../../dependencies/common_includes.hpp"

@@ -1,4 +1,4 @@
-#include "nightmode.h"
+#include "nightmode.hpp"
 
 bool executed = false;
 

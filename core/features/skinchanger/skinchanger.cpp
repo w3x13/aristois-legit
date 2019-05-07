@@ -1,4 +1,4 @@
-#include "skinchanger.h"
+#include "skinchanger.hpp"
 #define INVALID_EHANDLE_INDEX 0xFFFFFFFF
 
 inline bool c_skinchanger::apply_knife_model(attributable_item_t* weapon, const char* model) {

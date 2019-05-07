@@ -1,18 +1,15 @@
 #pragma once
 #include "../../dependencies/common_includes.hpp"
-#include <algorithm>
-#include <cmath>
-#include <sstream>
 #include "../features/visuals/visuals.hpp"
-#include "../features/misc/movement.h"
-#include "../features/visuals/nightmode.h"
-#include "../features/aimbot/aimbot.h"
+#include "../features/misc/movement.hpp"
+#include "../features/visuals/nightmode.hpp"
+#include "../features/aimbot/aimbot.hpp"
 #include "../menu/menu.hpp"
 #include "../features/misc/hitmarker.hpp"
 #include "../features/backtrack/backtrack.hpp"
 #include "../features/misc/prediction.hpp"
 #include "../features/misc/misc.hpp"
-#include "../features/skinchanger/skinchanger.h"
+#include "../features/skinchanger/skinchanger.hpp"
 #include "../features/misc/logs.hpp"
 #include "../features/misc/events.hpp"
 #include "../features/visuals/sound.hpp"
@@ -26,7 +23,6 @@ std::unique_ptr<vmt_hook> hooks::surface_hook;
 std::unique_ptr<vmt_hook> hooks::modelrender_hook;
 
 c_hooked_events hooked_events;
-
 uint8_t* present_address;
 hooks::present_fn original_present;
 uint8_t* reset_address;
@@ -41,7 +37,6 @@ void hooks::initialize() {
 	renderview_hook = std::make_unique<vmt_hook>();
 	surface_hook = std::make_unique<vmt_hook>();
 	modelrender_hook = std::make_unique<vmt_hook>();
-
 
 	render::get().setup_fonts();
 
