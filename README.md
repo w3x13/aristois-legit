@@ -2,9 +2,7 @@
 Full project files for **aristois**, Counter-Strike: Global Offensive cheat.
 
 ## Known issues
-- Some crashes.
 - Skin changer is not finished.
-- Config system (check FAQ for temp fix).
 
 ## FAQ
 ### Where's the DLL file?
@@ -18,9 +16,6 @@ Press `INSERT` key.
 
 ### How can I unload the cheat?
 Press `END` key.
-
-### Config system not working?
-copy **alpha.ini, beta.ini, gamma.ini** files from configs folder to **C:\aristois**
 
 ## Media
 ![image](https://i.imgur.com/KBo4mzn.png)
