@@ -20,50 +20,35 @@ enum font_flags {
 };
 
 class render : public singleton<render> {
-public: // fonts
+public:
 	DWORD watermark_font;
-	DWORD key_stroke_font;
 	DWORD name_font;
-	DWORD weapon_icon_font;
 
-public: // basic renderer
+public:
 	void setup_fonts() {
 		watermark_font = interfaces::surface->font_create();
-		key_stroke_font = interfaces::surface->font_create();
 		name_font = interfaces::surface->font_create();
-		weapon_icon_font = interfaces::surface->font_create();
 
 		interfaces::surface->set_font_glyph(watermark_font, "Tahoma", 12, 500, 0, 0, font_flags::fontflag_dropshadow);
-		interfaces::surface->set_font_glyph(key_stroke_font, "Verdana", 24, 700, 0, 0, font_flags::fontflag_dropshadow | font_flags::fontflag_antialias);
 		interfaces::surface->set_font_glyph(name_font, "Verdana", 12, 500, 0, 0, font_flags::fontflag_antialias | font_flags::fontflag_dropshadow);
-		interfaces::surface->set_font_glyph(weapon_icon_font, "undefeated", 12, 500, 0, 0, font_flags::fontflag_antialias | font_flags::fontflag_dropshadow);
 
 		printf("Render initialized!\n");
-
 	}
 	void draw_line(int x1, int y1, int x2, int y2, color colour) {
 		interfaces::surface->set_drawing_color(colour.r, colour.g, colour.b, colour.a);
 		interfaces::surface->draw_line(x1, y1, x2, y2);
 	}
-	void draw_text(int x, int y, unsigned long font, const char* string, bool text_centered, color colour) {
-		va_list va_alist;
-		char buf[1024];
-		va_start(va_alist, string);
-		_vsnprintf(buf, sizeof(buf), string, va_alist);
-		va_end(va_alist);
-		wchar_t wbuf[1024];
-		MultiByteToWideChar(CP_UTF8, 0, buf, 256, wbuf, 256);
-
-		int width, height;
-		interfaces::surface->get_text_size(font, wbuf, width, height);
+	void draw_text(int x, int y, unsigned long font, const char* string, color colour) {
+		size_t original_size = strlen(string) + 1;
+		const size_t new_size = 100;
+		size_t converted_chars = 0;
+		wchar_t wcstring[new_size];
+		mbstowcs_s(&converted_chars, wcstring, original_size, string, _TRUNCATE);
 
 		interfaces::surface->set_text_color(colour.r, colour.g, colour.b, colour.a);
 		interfaces::surface->draw_text_font(font);
-		if (text_centered)
-			interfaces::surface->draw_text_pos(x - (width / 2), y);
-		else
-			interfaces::surface->draw_text_pos(x, y);
-		interfaces::surface->draw_render_text(wbuf, wcslen(wbuf));
+		interfaces::surface->draw_text_pos(x, y);
+		interfaces::surface->draw_render_text(wcstring, wcslen(wcstring));
 	}
 	void draw_text(int x, int y, unsigned long font, std::string string, bool text_centered, color colour) {
 		std::wstring text = std::wstring(string.begin(), string.end());
