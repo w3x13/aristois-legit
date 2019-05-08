@@ -38,17 +38,11 @@ public:
 		interfaces::surface->set_drawing_color(colour.r, colour.g, colour.b, colour.a);
 		interfaces::surface->draw_line(x1, y1, x2, y2);
 	}
-	void draw_text(int x, int y, unsigned long font, const char* string, color colour) {
-		size_t original_size = strlen(string) + 1;
-		const size_t new_size = 100;
-		size_t converted_chars = 0;
-		wchar_t wcstring[new_size];
-		mbstowcs_s(&converted_chars, wcstring, original_size, string, _TRUNCATE);
-
+	void draw_text(int x, int y, unsigned long font, const wchar_t* string, color colour) {
 		interfaces::surface->set_text_color(colour.r, colour.g, colour.b, colour.a);
 		interfaces::surface->draw_text_font(font);
 		interfaces::surface->draw_text_pos(x, y);
-		interfaces::surface->draw_render_text(wcstring, wcslen(wcstring));
+		interfaces::surface->draw_render_text(string, wcslen(string));
 	}
 	void draw_text(int x, int y, unsigned long font, std::string string, bool text_centered, color colour) {
 		std::wstring text = std::wstring(string.begin(), string.end());
