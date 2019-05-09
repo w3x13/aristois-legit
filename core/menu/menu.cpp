@@ -20,9 +20,9 @@ namespace ImGui {
 		return true;
 	};
 
-	bool combo_array(const char* label, int* currIndex, std::vector<std::string>& values) {
+	bool combo_array(const char* label, int* current_index, std::vector<std::string>& values) {
 		if (values.empty()) { return false; }
-		return Combo(label, currIndex, vector_getter,
+		return Combo(label, current_index, vector_getter,
 			static_cast<void*>(&values), values.size());
 	}
 
@@ -627,6 +627,7 @@ void c_menu::run() {
 				ImGui::BeginChild("config", ImVec2(279, 268), true); {
 					static char entered_config_name[64] = { 0 };
 					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 18);
+					ImGui::PushItemWidth(175);
 					ImGui::InputText(("##CFG"), entered_config_name, 64);
 					static int selected;
 					std::string config;
@@ -641,13 +642,28 @@ void c_menu::run() {
 						ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 18);
 						if (ImGui::Button(("load"), ImVec2(175, 20))) {
 							c_config::get().load_config(config);
+							load_config = true;
+
+							if (c_config::get().logs_config_system) {
+								utilities::console_warning("[config system] ");
+								interfaces::console->console_printf(config.c_str());
+								interfaces::console->console_printf(" loaded. \n");
+								c_event_logs::get().add(config.c_str(), color(167, 255, 255, 255));
+							}
 						}
 					}
 					if (configs.size() >= 1) {
 						ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 18);
 						if (ImGui::Button(("save"), ImVec2(175, 20))) {
 							c_config::get().save_config(config);
+							save_config = true;
 
+							if (c_config::get().logs_config_system) {
+								utilities::console_warning("[config system] ");
+								interfaces::console->console_printf(config.c_str());
+								interfaces::console->console_printf(" saved. \n");
+								c_event_logs::get().add(config.c_str(), color(167, 255, 255, 255));
+							}
 						}
 					}
 					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 18);

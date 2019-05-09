@@ -7764,6 +7764,9 @@ bool ImGui::InputTextEx(const char* label, char* buf, int buf_size, const ImVec2
 	if (!is_multiline)
 		RenderFrame(frame_bb.Min, frame_bb.Max, GetColorU32(ImGuiCol_FrameBg), true, style.FrameRounding);
 
+	window->DrawList->AddRectFilled(frame_bb.Min - ImVec2(1, 1), frame_bb.Max + ImVec2(1, 1), GetColorU32(ImVec4(0 / 255.f, 0 / 255.f, 0 / 255.f, 0.1f)), style.FrameRounding);
+	window->DrawList->AddRectFilled(frame_bb.Min, frame_bb.Max, GetColorU32(ImGuiCol_FrameBg), style.FrameRounding);
+
 	const ImVec4 clip_rect(frame_bb.Min.x, frame_bb.Min.y, frame_bb.Min.x + size.x, frame_bb.Min.y + size.y); // Not using frame_bb.Max because we have adjusted size
 	ImVec2 render_pos = is_multiline ? draw_window->DC.CursorPos : frame_bb.Min + style.FramePadding;
 	ImVec2 text_size(0.f, 0.f);
