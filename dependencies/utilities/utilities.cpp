@@ -200,36 +200,6 @@ void* utilities::game::capture_interface(const char* mod, const char* iface) {
 	return iface_addr;
 }
 
-const wchar_t* utilities::to_wchar(const char* string) {
-	va_list va_alist;
-	char buf[1024];
-	va_start(va_alist, string);
-	_vsnprintf_s(buf, sizeof(buf), string, va_alist);
-	va_end(va_alist);
-	wchar_t wbuf[1024];
-	MultiByteToWideChar(CP_UTF8, 0, buf, 256, wbuf, 256);
-
-	return wbuf;
-}
-
-void utilities::clamp_angles(vec3_t& angles) {
-	if (angles.x > 89.0f) {
-		angles.x = 89.0f;
-	}
-	else if (angles.x < -89.0f) {
-		angles.x = -89.0f;
-	}
-
-	if (angles.y > 180.0f) {
-		angles.y = 180.0f;
-	}
-	else if (angles.y < -180.0f) {
-		angles.y = -180.0f;
-	}
-
-	angles.z = 0;
-}
-
 void utilities::material_setup() {
 	std::ofstream("csgo/materials/aristois_material.vmt") << R"#("VertexLitGeneric" {
             "$basetexture" "vgui/white_additive"

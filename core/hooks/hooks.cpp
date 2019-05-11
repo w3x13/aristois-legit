@@ -194,7 +194,9 @@ bool __stdcall hooks::create_move(float frame_time, c_usercmd* user_cmd) {
 			up = -450;
 
 		// clamping angles
-		utilities::clamp_angles(user_cmd->viewangles);
+		user_cmd->viewangles.x = std::clamp(user_cmd->viewangles.x, -89.0f, 89.0f);
+		user_cmd->viewangles.y = std::clamp(user_cmd->viewangles.y, -180.0f, 180.0f);
+		user_cmd->viewangles.z = 0.0f;
 	}
 
 	return false;

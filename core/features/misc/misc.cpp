@@ -81,8 +81,6 @@ void c_misc::spectators() {
 				if (target) {
 					auto spectator_target = interfaces::entity_list->get_client_entity_handle(target);
 					if (spectator_target == local_player) {
-						int x, y;
-						interfaces::surface->get_text_size(render::get().name_font, utilities::to_wchar(info.name), x, y);
 						std::string player_name = info.name;
 						std::transform(player_name.begin(), player_name.end(), player_name.begin(), ::tolower);
 						player_info_t spectator_info;

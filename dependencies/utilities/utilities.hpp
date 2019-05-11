@@ -44,8 +44,6 @@ namespace utilities {
 	int epoch_time();
 	void apply_clan_tag(const char * name);
 	bool is_behind_smoke(vec3_t start_pos, vec3_t end_pos);
-	const wchar_t * to_wchar(const char * string);
-	void clamp_angles(vec3_t & angles);
 	void material_setup();
 	template<class T>
 	static T * find_hud_element(const char * name);
