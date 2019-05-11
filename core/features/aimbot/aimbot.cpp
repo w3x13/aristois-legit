@@ -4,7 +4,7 @@
 #include "../../../source-sdk/sdk.hpp"
 #include "../../../source-sdk/math/vector2d.hpp"
 #include "../../../dependencies/common_includes.hpp"
-#include "../backtrack/backtrack.hpp"
+#include "../../features/backtrack/backtrack.hpp"
 
 int c_aimbot::get_nearest_bone(player_t* entity, c_usercmd* user_cmd) {
 	auto local_player = reinterpret_cast<player_t*>(interfaces::entity_list->get_client_entity(interfaces::engine->get_local_player()));
@@ -237,10 +237,10 @@ void c_aimbot::run(c_usercmd* user_cmd) {
 			aim_punch.x *= rcs_x;
 			aim_punch.y *= rcs_y;
 
-			//we should aim at one tick, like latest for exmaple, ill fix this later
 			if (c_config::get().aim_at_backtrack) {
-				for (int t = 0; t < 12; ++t) {
-					angle = c_math::get().calculate_angle(local_player->get_eye_pos(), entity_data[target][t].hitbox_position, user_cmd->viewangles + aim_punch);
+				auto record = &records[entity->index()];
+				if (record && record->size() && c_backtrack::get().valid_tick(record->front().simulation_time)) {
+					angle = c_math::get().calculate_angle(local_player->get_eye_pos(), record->back().head, user_cmd->viewangles + aim_punch);
 				}
 			}
 			else {

@@ -1,6 +1,5 @@
 #include "visuals.hpp"
 #include "../../../dependencies/common_includes.hpp"
-#include "../backtrack/backtrack.hpp"
 
 void c_visuals::run() {
 	auto local_player = reinterpret_cast<player_t*>(interfaces::entity_list->get_client_entity(interfaces::engine->get_local_player()));
@@ -590,40 +589,5 @@ void c_visuals::backtrack_skeleton(player_t* entity) {
 	if (!c_config::get().backtrack_skeleton)
 		return;
 
-	auto local_player = reinterpret_cast<player_t*>(interfaces::entity_list->get_client_entity(interfaces::engine->get_local_player()));
 
-	player_info_t info;
-	interfaces::engine->get_player_info(entity->index(), &info);
-
-	int i = entity->index();
-
-	if (entity && entity != local_player && !entity->dormant()) {
-		if (entity->is_alive() && entity->is_moving()) {
-			for (int t = 0; t < 12; ++t) {
-				if (entity_data[i][t].simtime && entity_data[i][t].simtime + 1 > local_player->simulation_time()) {
-					auto model = interfaces::model_info->get_studio_model(entity->model());
-
-					if (!model)
-						continue;
-
-					for (int b = 0; b < model->bones_count; b++) {
-						studio_bone_t* bone = model->bone(b);
-
-						if (!bone || !(bone->flags & 256) || bone->parent == -1)
-							continue;
-
-						static vec3_t bone_position, bone_previous_position;
-
-						if (!c_math::get().world_to_screen(vec3_t(bone_data[i][t].bone_matrix[b][0][3], bone_data[i][t].bone_matrix[b][1][3], bone_data[i][t].bone_matrix[b][2][3]), bone_position))
-							continue;
-
-						if (!c_math::get().world_to_screen(vec3_t(bone_data[i][t].bone_matrix[bone->parent][0][3], bone_data[i][t].bone_matrix[bone->parent][1][3], bone_data[i][t].bone_matrix[bone->parent][2][3]), bone_previous_position))
-							continue;
-
-						render::get().draw_line(bone_position.x, bone_position.y, bone_previous_position.x, bone_previous_position.y, color(255, 255, 255));
-					}
-				}
-			}
-		}
-	}
 }

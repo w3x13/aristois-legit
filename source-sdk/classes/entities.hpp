@@ -395,6 +395,15 @@ public:
 		return vec3_t{};
 	}
 
+	bool is_enemy() {
+		static auto danger_zone = interfaces::console->get_convar("game_type");
+
+		if (!is_in_local_team() || danger_zone->get_int() == 6)
+			return true;
+		else
+			return false;
+	}
+
 	bool is_in_local_team() {
 		return utilities::call_virtual<bool(__thiscall*)(void*)>(this, 92)(this);
 	}

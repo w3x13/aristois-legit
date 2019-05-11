@@ -219,23 +219,25 @@ void __stdcall hooks::draw_model_execute(IMatRenderContext * ctx, const draw_mod
 	auto local_player = reinterpret_cast<player_t*>(interfaces::entity_list->get_client_entity(interfaces::engine->get_local_player()));
 	auto entity = reinterpret_cast<player_t*>(interfaces::entity_list->get_client_entity(info.entity_index));
 
-	if (c_config::get().backtrack_visualize && strstr(model_name, "models/player")) {
-		if (entity) {
-			int i = entity->index();
+	auto material = interfaces::material_system->find_material("debug/debugdrawflat", TEXTURE_GROUP_MODEL);
+	material->increment_reference_count();
 
-			//still to do
-			if (entity && !entity->dormant()) {
-				if (local_player && entity->team() != local_player->team()) {
-					for (int t = 1; t < 12; ++t) {
-						if (entity_data[i][t].simtime && entity_data[i][t].simtime + 1 > local_player->simulation_time())
-							original_fn(interfaces::model_render, ctx, state, info, bone_data[i][t].bone_matrix);
+	if (interfaces::engine->is_connected() && interfaces::engine->is_in_game()) {
+		if (c_config::get().backtrack_visualize && strstr(model_name, "models/player")) {
+			if (entity) {
+				int i = entity->index();
+
+				if (entity && !entity->dormant()) {
+					if (local_player && entity->team() != local_player->team()) {
+						auto record = &records[info.entity_index];
+						if (record && record->size() && c_backtrack::get().valid_tick(record->front().simulation_time)) {
+							original_fn(interfaces::model_render, ctx, state, info, record->back().matrix);
+						}
 					}
 				}
 			}
 		}
-	}
 
-	if (interfaces::engine->is_connected() && interfaces::engine->is_in_game()) {
 		if (strstr(model_name, "sleeve")) {
 			if (c_config::get().remove_sleeves) {
 				interfaces::render_view->set_blend(0.f);
@@ -255,6 +257,8 @@ void __stdcall hooks::draw_model_execute(IMatRenderContext * ctx, const draw_mod
 void __stdcall hooks::frame_stage_notify(int frame_stage) {
 	reinterpret_cast<frame_stage_notify_fn>(client_hook->get_original(37))(interfaces::client, frame_stage);
 
+	static auto backtrack_init = (c_backtrack::get().init(), false);
+
 	if (frame_stage == FRAME_RENDER_START) {
 		c_misc::get().remove_smoke();
 		c_misc::get().remove_flash();
@@ -264,7 +268,8 @@ void __stdcall hooks::frame_stage_notify(int frame_stage) {
 		c_skinchanger::get().run();
 	}
 
-	else if (frame_stage == FRAME_NET_UPDATE_START) {
+	else if (frame_stage == FRAME_NET_UPDATE_START && interfaces::engine->is_in_game()) {
+		c_backtrack::get().update();
 		c_sound_esp::get().draw();
 	}
 }
