@@ -4,19 +4,18 @@
 
 struct stored_records {
 	vec3_t head;
-	int flags;
 	float simulation_time;
 	matrix_t matrix[128];
 };
 
 struct convars {
-	convar* updateRate;
-	convar* maxUpdateRate;
+	convar* update_rate;
+	convar* max_update_rate;
 	convar* interp;
-	convar* interpRatio;
-	convar* minInterpRatio;
-	convar* maxInterpRatio;
-	convar* maxUnlag;
+	convar* interp_ratio;
+	convar* min_interp_ratio;
+	convar* max_interp_ratio;
+	convar* max_unlag;
 };
 
 extern std::deque<stored_records> records[65];
@@ -32,12 +31,12 @@ public:
 	static void init() {
 		records->clear();
 
-		cvars.updateRate = interfaces::console->get_convar("cl_updaterate");
-		cvars.maxUpdateRate = interfaces::console->get_convar("sv_maxupdaterate");
+		cvars.update_rate = interfaces::console->get_convar("cl_updaterate");
+		cvars.max_update_rate = interfaces::console->get_convar("sv_maxupdaterate");
 		cvars.interp = interfaces::console->get_convar("cl_interp");
-		cvars.interpRatio = interfaces::console->get_convar("cl_interp_ratio");
-		cvars.minInterpRatio = interfaces::console->get_convar("sv_client_min_interp_ratio");
-		cvars.maxInterpRatio = interfaces::console->get_convar("sv_client_max_interp_ratio");
-		cvars.maxUnlag = interfaces::console->get_convar("sv_maxunlag");
+		cvars.interp_ratio = interfaces::console->get_convar("cl_interp_ratio");
+		cvars.min_interp_ratio = interfaces::console->get_convar("sv_client_min_interp_ratio");
+		cvars.max_interp_ratio = interfaces::console->get_convar("sv_client_max_interp_ratio");
+		cvars.max_unlag = interfaces::console->get_convar("sv_maxunlag");
 	}
 };
