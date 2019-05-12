@@ -84,8 +84,7 @@ public:
 
 	void draw_circle(int x, int y, int r, int s, color col) {
 		float Step = M_PI * 2.0 / s;
-		for (float a = 0; a < (M_PI*2.0); a += Step)
-		{
+		for (float a = 0; a < (M_PI*2.0); a += Step) {
 			float x1 = r * cos(a) + x;
 			float y1 = r * sin(a) + y;
 			float x2 = r * cos(a + Step) + x;
@@ -94,31 +93,17 @@ public:
 			interfaces::surface->draw_line(x1, y1, x2, y2);
 		}
 	}
-
-	void get_text_size(unsigned long font, const char* string, int w, int h) {
-		va_list va_alist;
-		char buf[1024];
-		va_start(va_alist, string);
-		_vsnprintf(buf, sizeof(buf), string, va_alist);
-		va_end(va_alist);
-		wchar_t out[1024];
-		MultiByteToWideChar(CP_UTF8, 0, buf, 256, out, 256);
-
-		interfaces::surface->get_text_size(font, out, w, h);
-	}
 	void get_text_size(unsigned long font, std::string string, int w, int h) {
 		std::wstring text = std::wstring(string.begin(), string.end());
 		const wchar_t* out = text.c_str();
 
 		interfaces::surface->get_text_size(font, out, w, h);
 	}
-	vec2_t get_screen_size(vec2_t area)
-	{
+	vec2_t get_screen_size(vec2_t area) {
 		static int old_w, old_h;
 		interfaces::engine->get_screen_size((int&)area.x, (int&)area.y);
 
-		if ((int&)area.x != old_w || (int&)area.y != old_h)
-		{
+		if ((int&)area.x != old_w || (int&)area.y != old_h) {
 			old_w = (int&)area.x;
 			old_h = (int&)area.y;
 			return vec2_t(old_w, old_h);
