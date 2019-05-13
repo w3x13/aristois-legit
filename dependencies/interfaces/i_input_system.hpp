@@ -204,8 +204,7 @@ enum ButtonCode_t : int {
 	KEY_XSTICK2_UP,								// VAXIS NEGATIVE
 };
 
-class i_inputsytem
-{
+class i_inputsytem {
 public:
 	void enable_input(bool bEnable) {
 		using original_fn = void(__thiscall*)(void*, bool);

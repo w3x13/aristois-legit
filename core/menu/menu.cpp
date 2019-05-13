@@ -138,7 +138,7 @@ void c_menu::run() {
 				ImGui::PushStyleColor(ImGuiCol_ChildWindowBg, ImVec4(30 / 255.f, 30 / 255.f, 39 / 255.f, 1.0f));
 				//push border color for child
 				ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0 / 255.f, 0 / 255.f, 0 / 255.f, 0.1f));
-				ImGui::BeginChild("aimbot", ImVec2(279, 543), true); {
+				ImGui::BeginChild("aimbot", ImVec2(279, 268), true); {
 					ImGui::Checkbox("active", &c_config::get().aim_enabled);
 					ImGui::Combo("mode", &c_config::get().aim_mode, "hitbox\0nearest hitbox"); //todo add custom bone selection - designer
 					ImGui::Checkbox("dynamic fov", &c_config::get().aim_distance_based_fov);
@@ -146,11 +146,19 @@ void c_menu::run() {
 					ImGui::Checkbox("scope aim", &c_config::get().scope_aim);
 					ImGui::Checkbox("smoke aim", &c_config::get().smoke_check);
 					ImGui::Checkbox("friendly fire", &c_config::get().aim_team_check);
-					ImGui::Checkbox("backtrack", &c_config::get().backtrack);
-					if (c_config::get().backtrack) {
-						ImGui::Checkbox("aim at records", &c_config::get().aim_at_backtrack);
-					}
 				} ImGui::EndChild(true);
+
+				ImGui::PopStyleVar();
+				ImGui::Dummy(ImVec2(0, -2)); ImGui::SameLine();
+				ImGui::Dummy(ImVec2(0, 0)); ImGui::SameLine();
+				ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(16, 16));
+
+				ImGui::BeginChild("backtrack", ImVec2(279, 267), true); {
+					ImGui::Checkbox("active", &c_config::get().backtrack);
+					ImGui::Checkbox("aim at records", &c_config::get().aim_at_backtrack);
+					ImGui::SliderFloat("backtrack records (ms)", &c_config::get().backtrack_ms, 1.0f, 200.0f, "%.2f");
+				}
+				ImGui::EndChild(true);
 
 				ImGui::NextColumn();
 
@@ -692,10 +700,14 @@ void c_menu::run() {
 				ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(16, 16));
 
 				ImGui::BeginChild("settings", ImVec2(279, 267), true); {
-					ImGui::Combo("keybinds", &c_config::get().keybinds_selection, "edge jump");
+					ImGui::Combo("keybinds", &c_config::get().keybinds_selection, "edge jump\0aimbot key");
 
 					if (c_config::get().keybinds_selection == 0) {
 						ImGui::Hotkey("##edge jump key", &c_config::get().edge_jump_key, ImVec2(100, 20));
+					}
+
+					else if (c_config::get().keybinds_selection == 1) {
+						ImGui::Hotkey("##aimbot key", &c_config::get().aim_key, ImVec2(100, 20));
 					}
 				}
 				ImGui::EndChild(true);
