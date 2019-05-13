@@ -18,7 +18,7 @@ bool c_backtrack::valid_tick(float simtime) {
 		return false;
 
 	auto delta = std::clamp(network->get_latency(0) + get_lerp_time(), 0.f, cvars.max_unlag->get_float()) - (interfaces::globals->cur_time - simtime);
-	return (std::fabsf(delta) < 0.2f);
+	return std::fabsf(delta) <= 0.2f;
 }
 
 void c_backtrack::update() {
@@ -49,8 +49,13 @@ void c_backtrack::update() {
 		if (records[i].size() && (records[i].front().simulation_time == entity->simulation_time()))
 			continue;
 
-		while (records[i].size() > 3 && records[i].size() > static_cast<size_t>(time_to_ticks(static_cast<float>(200) / 1000.f)))
+		while (records[i].size() > 3 && records[i].size() > static_cast<size_t>(time_to_ticks(static_cast<float>(c_config::get().backtrack_ms) / 1000.f)))
 			records[i].pop_back();
+
+		auto var_map = reinterpret_cast<uintptr_t>(entity) + 0x24;
+		auto vars_count = *reinterpret_cast<int*>(static_cast<uintptr_t>(var_map) + 0x14);
+		for (int j = 0; j < vars_count; j++)
+			* reinterpret_cast<uintptr_t*>(*reinterpret_cast<uintptr_t*>(var_map) + j * 0xC) = 0;
 
 		stored_records record{ };
 		record.head = local_player->get_hitbox_position(entity, hitbox_head);

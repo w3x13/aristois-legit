@@ -204,7 +204,7 @@ void c_aimbot::run(c_usercmd* user_cmd) {
 	weapon_settings(weapon);
 
 	//run aimbot
-	if (c_config::get().aim_enabled && user_cmd->buttons & in_attack) {
+	if (c_config::get().aim_enabled && user_cmd->buttons & in_attack || GetAsyncKeyState(c_config::get().aim_key)) {
 		if (auto target = find_target(user_cmd)) {
 			auto entity = reinterpret_cast<player_t*>(interfaces::entity_list->get_client_entity(target));
 
