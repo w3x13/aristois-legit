@@ -17,6 +17,8 @@ void c_nightmode::clear_stored_materials() {
 
 void c_nightmode::modulate(MaterialHandle_t i, i_material *material, bool backup = false) {
 	float brightness = c_config::get().nightmode_brightness / 100.f;
+	static convar * r_3dsky = interfaces::console->get_convar("r_3dsky");
+	r_3dsky->set_value(0);
 
 	if (strstr(material->GetTextureGroupName(), "World")) {
 		if (backup) {
