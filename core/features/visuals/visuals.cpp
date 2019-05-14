@@ -472,6 +472,8 @@ void c_visuals::chams() {
 		}
 
 		if (c_config::get().vis_chams_invis) {
+			if (utilities::is_behind_smoke(local_player->get_eye_pos(), entity->get_hitbox_position(entity, hitbox_head)) && c_config::get().vis_chams_smoke_check)
+				return;
 			interfaces::render_view->modulate_color(c_config::get().clr_chams_invis);
 			interfaces::render_view->set_blend(c_config::get().clr_chams_invis[3]);
 			mat->set_material_var_flag(MATERIAL_VAR_IGNOREZ, true); //crash without increment_reference_count - designer
@@ -480,6 +482,9 @@ void c_visuals::chams() {
 			entity->draw_model(1, 255);
 		}
 		if (c_config::get().vis_chams_vis) {
+			if (utilities::is_behind_smoke(local_player->get_eye_pos(), entity->get_hitbox_position(entity, hitbox_head)) && c_config::get().vis_chams_smoke_check)
+				return;
+			
 			interfaces::render_view->modulate_color(c_config::get().clr_chams_vis);
 			interfaces::render_view->set_blend(c_config::get().clr_chams_vis[3]);
 			mat->set_material_var_flag(MATERIAL_VAR_IGNOREZ, false);
