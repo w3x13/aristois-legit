@@ -11,7 +11,6 @@ int offset = 0;
 bool show_popup = false;
 static bool save_config = false;
 static bool load_config = false;
-
 namespace ImGui {
 	static auto vector_getter = [](void* vec, int idx, const char** out_text) {
 		auto& vector = *static_cast<std::vector<std::string>*>(vec);
@@ -658,7 +657,9 @@ void c_menu::run() {
 								utilities::console_warning("[config system] ");
 								interfaces::console->console_printf(config.c_str());
 								interfaces::console->console_printf(" loaded. \n");
-								c_event_logs::get().add(config.c_str(), color(167, 255, 255, 255));
+								std::stringstream ss;
+								ss << config.c_str() << " loaded.";
+								c_event_logs::get().add(ss.str(), color(167, 255, 255, 255));
 							}
 						}
 					}
@@ -672,7 +673,9 @@ void c_menu::run() {
 								utilities::console_warning("[config system] ");
 								interfaces::console->console_printf(config.c_str());
 								interfaces::console->console_printf(" saved. \n");
-								c_event_logs::get().add(config.c_str(), color(167, 255, 255, 255));
+								std::stringstream ss;
+								ss << config.c_str() << " saved.";
+								c_event_logs::get().add(ss.str(), color(167, 255, 255, 255));
 							}
 						}
 					}
