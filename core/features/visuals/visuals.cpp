@@ -67,9 +67,6 @@ void c_visuals::run() {
 			projectiles(entity);
 		}
 	}
-
-	//run other functions
-	force_crosshair();
 }
 
 void c_visuals::entity_esp(player_t* entity) {
@@ -551,18 +548,6 @@ void c_visuals::glow() {
 			glow.set(c_config::get().clr_glow_dropped[0], c_config::get().clr_glow_dropped[1], c_config::get().clr_glow_dropped[2], c_config::get().clr_glow_dropped[3]);
 		}
 
-	}
-}
-
-void c_visuals::force_crosshair() {
-	auto local_player = reinterpret_cast<player_t*>(interfaces::entity_list->get_client_entity(interfaces::engine->get_local_player()));
-
-	static convar* weapon_debug_spread_show = interfaces::console->get_convar("weapon_debug_spread_show");
-
-	weapon_debug_spread_show->flags &= ~fcvar_cheat;
-
-	if (local_player && local_player->health() > 0) {
-		weapon_debug_spread_show->set_value(local_player->is_scoped() || !c_config::get().force_crosshair ? 0 : 3);
 	}
 }
 

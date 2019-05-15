@@ -5,7 +5,6 @@ class c_visuals : public singleton< c_visuals > {
 public:
 	void run();
 	void entity_esp(player_t * entity);
-	void force_crosshair();
 	void skeleton(player_t * entity);
 	void backtrack_skeleton(player_t * entity);
 	void chams();

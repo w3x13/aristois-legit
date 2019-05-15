@@ -149,6 +149,9 @@ bool __stdcall hooks::create_move(float frame_time, c_usercmd* user_cmd) {
 		c_movement::get().bunnyhop(user_cmd);
 		c_misc::get().clantag_spammer();
 		c_misc::get().viewmodel_offset();
+		c_misc::get().disable_post_processing();
+		c_misc::get().recoil_crosshair();
+		c_misc::get().force_crosshair();
 
 		//legitbot and prediction stuff
 		c_movement::get().edge_jump_pre_prediction(user_cmd);

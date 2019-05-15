@@ -386,7 +386,8 @@ void c_menu::run() {
 					ImGui::Checkbox("anti screenshot", &c_config::get().anti_screenshot);
 					ImGui::Checkbox("spectators", &c_config::get().spectators_list);
 					ImGui::Checkbox("watermark", &c_config::get().watermark);
-
+					ImGui::Checkbox("disable post processing", &c_config::get().disable_post_processing);
+					ImGui::Checkbox("recoil crosshair", &c_config::get().recoil_crosshair);
 
 					ImGui::Checkbox("viewmodel offset", &c_config::get().viewmodel_offset);
 					if (c_config::get().viewmodel_offset) {
