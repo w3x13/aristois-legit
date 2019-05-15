@@ -346,6 +346,7 @@ void c_menu::run() {
 					ImGui::Checkbox("enemy (behind wall)", &c_config::get().vis_chams_invis);
 					ImGui::ColorEdit4("enemy (behind wall) color", c_config::get().clr_chams_invis, ImGuiColorEditFlags_NoInputs);
 					ImGui::Checkbox("backtrack", &c_config::get().backtrack_visualize);
+					ImGui::Checkbox("smoke check", &c_config::get().vis_chams_smoke_check);
 				}
 				ImGui::EndChild(true);
 
