@@ -183,4 +183,5 @@ public:
 	int paint_kit_index_g3sg1 = 0;
 	float backtrack_ms = 0.0f;
 	int aim_key;
+	bool vis_chams_smoke_check = false;
 };
