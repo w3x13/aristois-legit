@@ -125,12 +125,11 @@ void c_misc::clantag_spammer() noexcept {
 	if (!c_config::get().clan_tag || !c_config::get().misc_enabled)
 		return;
 
-	static std::string tag = "    aristois.me    ";
+	static std::string tag = "aristois.me";
 	static float last_time = 0;
 
 	if (interfaces::globals->cur_time > last_time) {
-		tag += tag.at(0);
-		tag.erase(0, 1);
+		std::rotate(std::begin(tag), std::next(std::begin(tag)), std::end(tag));
 		utilities::apply_clan_tag(tag.c_str());
 
 		last_time = interfaces::globals->cur_time + 0.9f;
