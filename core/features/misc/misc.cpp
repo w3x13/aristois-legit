@@ -125,7 +125,7 @@ void c_misc::clantag_spammer() noexcept {
 	if (!c_config::get().clan_tag || !c_config::get().misc_enabled)
 		return;
 
-	static std::string tag = "aristois.me";
+	static std::string tag = "aristois.me ";
 	static float last_time = 0;
 
 	if (interfaces::globals->cur_time > last_time) {
