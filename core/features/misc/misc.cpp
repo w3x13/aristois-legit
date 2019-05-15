@@ -1,6 +1,6 @@
 #include "misc.hpp"
 
-void c_misc::remove_smoke() {
+void c_misc::remove_smoke() noexcept {
 	if (!c_config::get().remove_smoke || !c_config::get().visuals_enabled)
 		return;
 
@@ -25,7 +25,7 @@ void c_misc::remove_smoke() {
 	}
 }
 
-void c_misc::remove_flash() {
+void c_misc::remove_flash() noexcept {
 	if (!c_config::get().reduce_flash || !c_config::get().visuals_enabled)
 		return;
 
@@ -38,7 +38,7 @@ void c_misc::remove_flash() {
 		local_player->flash_duration() = 0.0f;
 }
 
-void c_misc::remove_scope() {
+void c_misc::remove_scope() noexcept {
 	if (!c_config::get().remove_scope || !c_config::get().visuals_enabled)
 		return;
 
@@ -57,7 +57,7 @@ void c_misc::remove_scope() {
 	interfaces::surface->draw_line(w / 2, 0, w / 2, h);
 }
 
-void c_misc::spectators() {
+void c_misc::spectators() noexcept {
 	if (!c_config::get().spectators_list || !c_config::get().misc_enabled)
 		return;
 
@@ -94,7 +94,7 @@ void c_misc::spectators() {
 	}
 }
 
-void c_misc::watermark() {
+void c_misc::watermark() noexcept {
 	if (!c_config::get().watermark || !c_config::get().misc_enabled)
 		return;
 
@@ -121,7 +121,7 @@ void c_misc::watermark() {
 	render::get().draw_text(width - 270, 7, render::get().watermark_font, ss.str().c_str(), false, color(255, 255, 255, 255));
 }
 
-void c_misc::clantag_spammer() {
+void c_misc::clantag_spammer() noexcept {
 	if (!c_config::get().clan_tag || !c_config::get().misc_enabled)
 		return;
 
@@ -140,11 +140,39 @@ void c_misc::clantag_spammer() {
 		last_time = interfaces::globals->cur_time;
 }
 
-void c_misc::viewmodel_offset() {
+void c_misc::viewmodel_offset() noexcept {
 	if (!c_config::get().viewmodel_offset || !c_config::get().misc_enabled)
 		return;
 
 	interfaces::console->get_convar("viewmodel_offset_x")->set_value(c_config::get().viewmodel_x);
 	interfaces::console->get_convar("viewmodel_offset_y")->set_value(c_config::get().viewmodel_y);
 	interfaces::console->get_convar("viewmodel_offset_z")->set_value(c_config::get().viewmodel_z);
+}
+
+void c_misc::disable_post_processing() noexcept {
+	if (!c_config::get().misc_enabled)
+		return;
+
+	static auto mat_postprocess_enable = interfaces::console->get_convar("mat_postprocess_enable");
+	mat_postprocess_enable->set_value(c_config::get().disable_post_processing ? 0 : 1);
+}
+
+void c_misc::recoil_crosshair() noexcept {
+	if (!c_config::get().misc_enabled)
+		return;
+
+	static auto cl_crosshair_recoil = interfaces::console->get_convar("cl_crosshair_recoil");
+	cl_crosshair_recoil->set_value(c_config::get().disable_post_processing ? 1 : 0);
+}
+
+void c_misc::force_crosshair() noexcept {
+	if (!c_config::get().misc_enabled)
+		return;
+
+	auto local_player = reinterpret_cast<player_t*>(interfaces::entity_list->get_client_entity(interfaces::engine->get_local_player()));
+	static auto weapon_debug_spread_show = interfaces::console->get_convar("weapon_debug_spread_show");
+
+	if (local_player && local_player->health() > 0) {
+		weapon_debug_spread_show->set_value(local_player->is_scoped() || !c_config::get().force_crosshair ? 0 : 3);
+	}
 }
