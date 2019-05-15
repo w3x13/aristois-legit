@@ -2,7 +2,7 @@
 
 std::vector<c_sound_info> sound_logs;
 
-void c_sound_esp::draw_circle(color colors, vec3_t position) {
+void c_sound_esp::draw_circle(color colors, vec3_t position) noexcept {
 	BeamInfo_t beam_info;
 	beam_info.m_nType = TE_BEAMRINGPOINT;
 	beam_info.m_pszModelName = "sprites/purplelaser1.vmt";
@@ -32,7 +32,7 @@ void c_sound_esp::draw_circle(color colors, vec3_t position) {
 	}
 }
 
-void c_sound_esp::event_player_footstep(i_game_event * event) {
+void c_sound_esp::event_player_footstep(i_game_event * event) noexcept {
 	if (!c_config::get().sound_footstep)
 		return;
 
@@ -68,7 +68,7 @@ void c_sound_esp::event_player_footstep(i_game_event * event) {
 
 }
 
-void c_sound_esp::event_player_hurt(i_game_event * event) {
+void c_sound_esp::event_player_hurt(i_game_event * event) noexcept {
 	if (!c_config::get().sound_footstep)
 		return;
 
@@ -96,7 +96,7 @@ void c_sound_esp::event_player_hurt(i_game_event * event) {
 	}
 }
 
-void c_sound_esp::draw() {
+void c_sound_esp::draw() noexcept {
 	if (!c_config::get().sound_footstep)
 		return;
 

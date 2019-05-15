@@ -6,7 +6,7 @@
 #include "../../../dependencies/common_includes.hpp"
 #include "../../features/backtrack/backtrack.hpp"
 
-int c_aimbot::get_nearest_bone(player_t* entity, c_usercmd* user_cmd) {
+int c_aimbot::get_nearest_bone(player_t* entity, c_usercmd* user_cmd) noexcept {
 	auto local_player = reinterpret_cast<player_t*>(interfaces::entity_list->get_client_entity(interfaces::engine->get_local_player()));
 	float best_dist = 360.f;
 	int aimbone;
@@ -45,7 +45,7 @@ int c_aimbot::get_nearest_bone(player_t* entity, c_usercmd* user_cmd) {
 	return aimbone;
 }
 
-void c_aimbot::weapon_settings(weapon_t* weapon) {
+void c_aimbot::weapon_settings(weapon_t* weapon) noexcept {
 	if (!weapon)
 		return;
 
@@ -171,7 +171,7 @@ void c_aimbot::weapon_settings(weapon_t* weapon) {
 	}
 }
 
-int c_aimbot::find_target(c_usercmd* user_cmd) {
+int c_aimbot::find_target(c_usercmd* user_cmd) noexcept {
 	auto local_player = reinterpret_cast<player_t*>(interfaces::entity_list->get_client_entity(interfaces::engine->get_local_player()));
 	auto best_fov = aim_fov;
 	auto best_target = 0;
@@ -196,7 +196,7 @@ int c_aimbot::find_target(c_usercmd* user_cmd) {
 	return best_target;
 }
 
-void c_aimbot::run(c_usercmd* user_cmd) {
+void c_aimbot::run(c_usercmd* user_cmd) noexcept {
 	auto local_player = reinterpret_cast<player_t*>(interfaces::entity_list->get_client_entity(interfaces::engine->get_local_player()));
 	auto weapon = local_player->active_weapon();
 

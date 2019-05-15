@@ -3,12 +3,12 @@
 
 class c_visuals : public singleton< c_visuals > {
 public:
-	void run();
-	void entity_esp(player_t * entity);
-	void skeleton(player_t * entity);
-	void backtrack_skeleton(player_t * entity);
-	void chams();
-	void glow();
+	void run() noexcept;
+	void entity_esp(player_t * entity) noexcept;
+	void skeleton(player_t * entity) noexcept;
+	void backtrack_skeleton(player_t * entity) noexcept;
+	void chams() noexcept;
+	void glow() noexcept;
 private:
 	int alpha[65];
 	bool last_dormant[65];
@@ -91,8 +91,8 @@ private:
 		return true;
 	}
 
-	void player_rendering(player_t * entity);
-	void dropped_weapons(player_t * entity);
-	void projectiles(player_t * entity);
-	void bomb_esp(player_t * entity);
+	void player_rendering(player_t * entity) noexcept;
+	void dropped_weapons(player_t * entity) noexcept;
+	void projectiles(player_t * entity) noexcept;
+	void bomb_esp(player_t * entity) noexcept;
 };

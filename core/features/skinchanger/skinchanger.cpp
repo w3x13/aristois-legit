@@ -1,7 +1,7 @@
 #include "skinchanger.hpp"
 #define INVALID_EHANDLE_INDEX 0xFFFFFFFF
 
-inline bool c_skinchanger::apply_knife_model(attributable_item_t* weapon, const char* model) {
+inline bool c_skinchanger::apply_knife_model(attributable_item_t* weapon, const char* model) noexcept {
 	auto local_player = reinterpret_cast<player_t*>(interfaces::entity_list->get_client_entity(interfaces::engine->get_local_player()));
 	auto viewmodel = reinterpret_cast<base_view_model*>(interfaces::entity_list->get_client_entity_handle(local_player->view_model()));
 
@@ -19,7 +19,7 @@ inline bool c_skinchanger::apply_knife_model(attributable_item_t* weapon, const 
 	return true;
 }
 
-inline bool c_skinchanger::apply_knife_skin(attributable_item_t* weapon, int item_definition_index, int paint_kit, int model_index, int entity_quality, float fallback_wear) {
+inline bool c_skinchanger::apply_knife_skin(attributable_item_t* weapon, int item_definition_index, int paint_kit, int model_index, int entity_quality, float fallback_wear) noexcept {
 	weapon->item_definition_index() = item_definition_index;
 	weapon->fallback_paint_kit() = paint_kit;
 	weapon->model_index() = model_index;
@@ -29,7 +29,7 @@ inline bool c_skinchanger::apply_knife_skin(attributable_item_t* weapon, int ite
 	return true;
 }
 
-void c_skinchanger::run() {
+void c_skinchanger::run() noexcept {
 	if (!interfaces::engine->is_connected() && !interfaces::engine->is_in_game())
 		return;
 

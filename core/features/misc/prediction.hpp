@@ -4,8 +4,8 @@
 
 class c_prediction : public singleton <c_prediction> {
 public:
-	void start_prediction(c_usercmd* command);
-	void end_prediction();
+	void start_prediction(c_usercmd* command) noexcept;
+	void end_prediction() noexcept;
 	float old_cur_time;
 	float old_frame_time;
 	int* prediction_random_seed;

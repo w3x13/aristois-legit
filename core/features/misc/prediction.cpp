@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 
-void c_prediction::start_prediction(c_usercmd* command) {
+void c_prediction::start_prediction(c_usercmd* command) noexcept {
 	auto local_player = reinterpret_cast<player_t*>(interfaces::entity_list->get_client_entity(interfaces::engine->get_local_player()));
 
 	if (local_player) {
@@ -32,7 +32,7 @@ void c_prediction::start_prediction(c_usercmd* command) {
 	}
 }
 
-void c_prediction::end_prediction() {
+void c_prediction::end_prediction() noexcept {
 	auto local_player = reinterpret_cast<player_t*>(interfaces::entity_list->get_client_entity(interfaces::engine->get_local_player()));
 
 	if (local_player) {

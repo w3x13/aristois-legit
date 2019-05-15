@@ -5,10 +5,10 @@
 
 class c_event_logs : public singleton<c_event_logs> {
 public:
-	void run();
-	void event_item_purchase(i_game_event * event);
-	void event_player_hurt(i_game_event * event);
-	void add(std::string text, color colors);
+	void run() noexcept;
+	void event_item_purchase(i_game_event * event) noexcept;
+	void event_player_hurt(i_game_event * event) noexcept;
+	void add(std::string text, color colors) noexcept;
 
 private:
 	struct loginfo_t {

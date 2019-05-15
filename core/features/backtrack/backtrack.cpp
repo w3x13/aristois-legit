@@ -3,16 +3,16 @@
 std::deque<stored_records> records[65];
 convars cvars;
 
-float c_backtrack::get_lerp_time() {
+float c_backtrack::get_lerp_time() noexcept {
 	auto ratio = std::clamp(cvars.interp_ratio->get_float(), (cvars.min_interp_ratio->get_float() != 1.f) ? cvars.min_interp_ratio->get_float() : 1.f, cvars.max_interp_ratio->get_float());
 	return max(cvars.interp->get_float(), (ratio / ((cvars.max_update_rate) ? cvars.max_update_rate->get_float() : cvars.update_rate->get_float())));
 }
 
-int c_backtrack::time_to_ticks(float time) {
+int c_backtrack::time_to_ticks(float time) noexcept {
 	return static_cast<int>((0.5f + static_cast<float>(time) / interfaces::globals->interval_per_tick));
 }
 
-bool c_backtrack::valid_tick(float simtime) {
+bool c_backtrack::valid_tick(float simtime) noexcept {
 	auto network = interfaces::engine->get_net_channel_info();
 	if (!network)
 		return false;
@@ -21,7 +21,7 @@ bool c_backtrack::valid_tick(float simtime) {
 	return std::fabsf(delta) <= 0.2f;
 }
 
-void c_backtrack::update() {
+void c_backtrack::update() noexcept {
 	auto local_player = reinterpret_cast<player_t*>(interfaces::entity_list->get_client_entity(interfaces::engine->get_local_player()));
 	if (!c_config::get().backtrack || !local_player || !local_player->is_alive()) {
 		if (!records->empty())
@@ -67,7 +67,7 @@ void c_backtrack::update() {
 	}
 }
 
-void c_backtrack::run(c_usercmd * cmd) {
+void c_backtrack::run(c_usercmd * cmd) noexcept {
 	if (!c_config::get().backtrack)
 		return;
 

@@ -23,11 +23,11 @@ extern convars cvars;
 
 class c_backtrack : public singleton< c_backtrack > {
 public:
-	void update();
-	void run(c_usercmd*);
-	float get_lerp_time();
-	int time_to_ticks(float time);
-	bool valid_tick(float simtime);
+	void update() noexcept;
+	void run(c_usercmd*) noexcept;
+	float get_lerp_time() noexcept;
+	int time_to_ticks(float time) noexcept;
+	bool valid_tick(float simtime) noexcept;
 	static void init() {
 		records->clear();
 

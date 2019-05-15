@@ -49,7 +49,7 @@ void* get_export(const char* module_name, const char* export_name) {
 	return reinterpret_cast<void*>(GetProcAddress(mod, export_name));
 }
 
-void c_kit_parser::setup() {
+void c_kit_parser::setup() noexcept {
 	const auto V_UCS2ToUTF8 = static_cast<int(*)(const wchar_t* ucs2, char* utf8, int len)>(get_export("vstdlib.dll", "V_UCS2ToUTF8"));
 	const auto sig_address = utilities::pattern_scan(GetModuleHandleA("client_panorama.dll"), "E8 ? ? ? ? FF 76 0C 8D 48 04 E8");
 	const auto item_system_offset = *reinterpret_cast<std::int32_t*>(sig_address + 1);

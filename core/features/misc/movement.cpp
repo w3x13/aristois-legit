@@ -2,7 +2,7 @@
 #include "movement.hpp"
 auto flags_backup = 0;
 
-void c_movement::bunnyhop(c_usercmd* user_cmd) {
+void c_movement::bunnyhop(c_usercmd* user_cmd) noexcept {
 	if (!c_config::get().bunny_hop || !c_config::get().misc_enabled)
 		return;
 
@@ -51,7 +51,7 @@ void c_movement::bunnyhop(c_usercmd* user_cmd) {
 	}
 }
 
-void c_movement::edge_jump_pre_prediction(c_usercmd* user_cmd) {
+void c_movement::edge_jump_pre_prediction(c_usercmd* user_cmd) noexcept {
 	auto local_player = reinterpret_cast<player_t*>(interfaces::entity_list->get_client_entity(interfaces::engine->get_local_player()));
 
 	if (!c_config::get().edge_jump)
@@ -69,7 +69,7 @@ void c_movement::edge_jump_pre_prediction(c_usercmd* user_cmd) {
 	flags_backup = local_player->flags();
 }
 
-void c_movement::edge_jump_post_prediction(c_usercmd* user_cmd) {
+void c_movement::edge_jump_post_prediction(c_usercmd* user_cmd) noexcept {
 	auto local_player = reinterpret_cast<player_t*>(interfaces::entity_list->get_client_entity(interfaces::engine->get_local_player()));
 
 	if (!c_config::get().edge_jump)

@@ -1,7 +1,7 @@
 #include "visuals.hpp"
 #include "../../../dependencies/common_includes.hpp"
 
-void c_visuals::run() {
+void c_visuals::run() noexcept {
 	auto local_player = reinterpret_cast<player_t*>(interfaces::entity_list->get_client_entity(interfaces::engine->get_local_player()));
 
 	if (!c_config::get().visuals_enabled)
@@ -30,7 +30,7 @@ void c_visuals::run() {
 			entity->spotted() = true;
 		}
 
-		if (entity->team() == local_player->team() & !c_config::get().visuals_team_check)
+		if (entity->team() == local_player->team() && !c_config::get().visuals_team_check)
 			continue;
 
 		const int fade = (int)((6.66666666667f * interfaces::globals->frame_time) * 255);
@@ -69,7 +69,7 @@ void c_visuals::run() {
 	}
 }
 
-void c_visuals::entity_esp(player_t* entity) {
+void c_visuals::entity_esp(player_t* entity) noexcept {
 	if (!c_config::get().entity_esp)
 		return;
 
@@ -100,7 +100,7 @@ void c_visuals::entity_esp(player_t* entity) {
 	}
 }
 
-void c_visuals::player_rendering(player_t* entity) {
+void c_visuals::player_rendering(player_t* entity) noexcept {
 	if ((entity->dormant() && alpha[entity->index()] == 0) && !c_config::get().player_dormant)
 		return;
 
@@ -187,7 +187,7 @@ void c_visuals::player_rendering(player_t* entity) {
 	}
 }
 
-void c_visuals::dropped_weapons(player_t* entity) {
+void c_visuals::dropped_weapons(player_t* entity) noexcept {
 	auto class_id = entity->client_class()->class_id;
 	auto model_name = interfaces::model_info->get_model_name(entity->model());
 	auto weapon = entity;
@@ -293,7 +293,7 @@ void c_visuals::dropped_weapons(player_t* entity) {
 	}
 }
 
-void c_visuals::projectiles(player_t* entity) {
+void c_visuals::projectiles(player_t* entity) noexcept {
 	if (!c_config::get().projectiles)
 		return;
 
@@ -353,7 +353,7 @@ void c_visuals::projectiles(player_t* entity) {
 	}
 }
 
-void c_visuals::bomb_esp(player_t* entity) {
+void c_visuals::bomb_esp(player_t* entity) noexcept {
 	if (!c_config::get().bomb_planted)
 		return;
 
@@ -425,7 +425,7 @@ void c_visuals::bomb_esp(player_t* entity) {
 	render::get().draw_filled_rect(bomb_position.x - c4_timer / 2, bomb_position.y + 13, explode_time, 3, color(167, 24, 71, 255));
 }
 
-void c_visuals::chams() {
+void c_visuals::chams() noexcept {
 	if (!c_config::get().visuals_enabled || (!c_config::get().vis_chams_vis && !c_config::get().vis_chams_invis))
 		return;
 
@@ -494,7 +494,7 @@ void c_visuals::chams() {
 	}
 }
 
-void c_visuals::glow() {
+void c_visuals::glow() noexcept {
 	if (!c_config::get().visuals_enabled || !c_config::get().visuals_glow)
 		return;
 
@@ -551,7 +551,7 @@ void c_visuals::glow() {
 	}
 }
 
-void c_visuals::skeleton(player_t* entity) {
+void c_visuals::skeleton(player_t* entity) noexcept {
 	if (!c_config::get().skeleton)
 		return;
 
@@ -575,7 +575,7 @@ void c_visuals::skeleton(player_t* entity) {
 	}
 }
 
-void c_visuals::backtrack_skeleton(player_t* entity) {
+void c_visuals::backtrack_skeleton(player_t* entity) noexcept {
 	if (!c_config::get().backtrack_skeleton)
 		return;
 
