@@ -162,7 +162,7 @@ void c_misc::recoil_crosshair() noexcept {
 		return;
 
 	static auto cl_crosshair_recoil = interfaces::console->get_convar("cl_crosshair_recoil");
-	cl_crosshair_recoil->set_value(c_config::get().disable_post_processing ? 1 : 0);
+	cl_crosshair_recoil->set_value(c_config::get().recoil_crosshair ? 1 : 0);
 }
 
 void c_misc::force_crosshair() noexcept {
