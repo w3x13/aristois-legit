@@ -49,10 +49,10 @@ void c_hitmarker::draw() noexcept {
 	if (hitmarker_time > 0) {
 		float alpha = hitmarker_time;
 
-		render::get().draw_line(width_mid - 5, height_mid - 5, width_mid + 5, height_mid + 5, color(255, 255, 255, alpha));
-		render::get().draw_line(width_mid - 6, height_mid - 6, width_mid + 6, height_mid + 6, color(255, 255, 255, alpha));
-		render::get().draw_line(width_mid + 5, height_mid - 5, width_mid - 5, height_mid + 5, color(255, 255, 255, alpha));
-		render::get().draw_line(width_mid + 6, height_mid - 6, width_mid - 6, height_mid + 6, color(255, 255, 255, alpha));
+		render::get().draw_line(width_mid + 6, height_mid + 6, width_mid + 3, height_mid + 3, color(255, 255, 255, alpha));
+		render::get().draw_line(width_mid - 6, height_mid + 6, width_mid - 3, height_mid + 3, color(255, 255, 255, alpha));
+		render::get().draw_line(width_mid + 6, height_mid - 6, width_mid + 3, height_mid - 3, color(255, 255, 255, alpha));
+		render::get().draw_line(width_mid - 6, height_mid - 6, width_mid - 3, height_mid - 3, color(255, 255, 255, alpha));
 
 		hitmarker_time -= 2;
 	}
