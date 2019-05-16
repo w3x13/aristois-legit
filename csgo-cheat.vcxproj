@@ -95,8 +95,8 @@
     <ClCompile Include="core\features\misc\prediction.cpp" />
     <ClCompile Include="core\features\misc\movement.cpp" />
     <ClCompile Include="core\features\skinchanger\parser.cpp" />
-    <ClCompile Include="core\features\visuals\nightmode.cpp" />
     <ClCompile Include="core\features\skinchanger\skinchanger.cpp" />
+    <ClCompile Include="core\features\visuals\nightmode.cpp" />
     <ClCompile Include="core\features\visuals\sound.cpp" />
     <ClCompile Include="core\features\visuals\visuals.cpp" />
     <ClCompile Include="core\hooks\hooks.cpp" />
@@ -134,8 +134,8 @@
     <ClInclude Include="core\features\misc\prediction.hpp" />
     <ClInclude Include="core\features\misc\movement.hpp" />
     <ClInclude Include="core\features\skinchanger\parser.hpp" />
-    <ClInclude Include="core\features\visuals\nightmode.hpp" />
     <ClInclude Include="core\features\skinchanger\skinchanger.hpp" />
+    <ClInclude Include="core\features\visuals\nightmode.hpp" />
     <ClInclude Include="core\features\visuals\sound.hpp" />
     <ClInclude Include="core\features\visuals\visuals.hpp" />
     <ClInclude Include="core\hooks\hooks.hpp" />

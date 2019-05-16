@@ -2,7 +2,6 @@
 #include "../../dependencies/common_includes.hpp"
 #include "../features/visuals/visuals.hpp"
 #include "../features/misc/movement.hpp"
-#include "../features/visuals/nightmode.hpp"
 #include "../features/aimbot/aimbot.hpp"
 #include "../menu/menu.hpp"
 #include "../features/misc/hitmarker.hpp"
@@ -14,6 +13,7 @@
 #include "../features/misc/events.hpp"
 #include "../features/visuals/sound.hpp"
 #include "../features/skinchanger/parser.hpp"
+#include "../features/visuals/nightmode.hpp"
 
 std::unique_ptr<vmt_hook> hooks::client_hook;
 std::unique_ptr<vmt_hook> hooks::clientmode_hook;
@@ -163,15 +163,7 @@ bool __stdcall hooks::create_move(float frame_time, c_usercmd* user_cmd) {
 		c_prediction::get().end_prediction();
 		c_movement::get().edge_jump_post_prediction(user_cmd);
 
-		//visuals
-		if (c_config::get().visuals_enabled) {
-			if (c_config::get().nightmode) {
-				c_nightmode::get().apply();
-			}
-			if (!(c_config::get().nightmode)) {
-				c_nightmode::get().remove();
-			}
-		}
+		c_nightmode::get().run();
 
 		// clamping movement
 		auto forward = user_cmd->forwardmove;

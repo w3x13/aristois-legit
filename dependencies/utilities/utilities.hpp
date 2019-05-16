@@ -32,6 +32,8 @@ namespace utilities {
 		}
 	};
 
+	void load_named_sky(const char* sky_name);
+
 	void change_name(const char* name);
 
 	void dump_steam_id();

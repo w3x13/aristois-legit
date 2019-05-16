@@ -1,110 +1,84 @@
 #include "nightmode.hpp"
 
+static convar* old_sky_name;
 bool executed = false;
 
-convar * sv_skyname = nullptr;
-std::string fallback_skybox = "";
+void c_nightmode::run() noexcept {
+	if (!c_config::get().visuals_enabled)
+		return;
 
-std::vector<MaterialBackup> materials;
-std::vector<MaterialBackup> skyboxes;
+	c_config::get().nightmode ? c_nightmode::get().apply() : c_nightmode::get().remove();
 
-void c_nightmode::clear_stored_materials() {
-	fallback_skybox = "";
-	sv_skyname = nullptr;
-	materials.clear();
-	skyboxes.clear();
+	static auto r_drawspecificstaticprop = interfaces::console->get_convar("r_DrawSpecificStaticProp");
+	r_drawspecificstaticprop->set_value(c_config::get().nightmode ? 0 : 1);
+
+	static auto r_3dsky = interfaces::console->get_convar("r_3dsky");
+	r_3dsky->set_value(c_config::get().nightmode ? 0 : 1);
 }
 
-void c_nightmode::modulate(MaterialHandle_t i, i_material *material, bool backup = false) {
-	float brightness = c_config::get().nightmode_brightness / 100.f;
-	static convar * r_3dsky = interfaces::console->get_convar("r_3dsky");
-	r_3dsky->set_value(0);
-
-	if (strstr(material->GetTextureGroupName(), "World")) {
-		if (backup) {
-			materials.push_back(MaterialBackup(i, material));
-		}
-
-		material->color_modulate(brightness, brightness, brightness);
-	}
-	else if (strstr(material->GetTextureGroupName(), "StaticProp")) {
-		if (backup) {
-			materials.push_back(MaterialBackup(i, material));
-		}
-
-		material->color_modulate(0.4f, 0.4f, 0.4f);
-	}
-
-	else if (strstr(material->GetTextureGroupName(), "SkyBox")) {
-		material->color_modulate(c_config::get().clr_sky[0], c_config::get().clr_sky[1], c_config::get().clr_sky[2]);
-		material->alpha_modulate(c_config::get().clr_sky[3]);
-	}
-
-}
-
-void c_nightmode::apply() {
+void c_nightmode::apply() noexcept {
 	if (executed) {
 		return;
 	}
 
-	executed = true;
+	auto local_player = reinterpret_cast<player_t*>(interfaces::entity_list->get_client_entity(interfaces::engine->get_local_player()));
 
-	if (!sv_skyname) {
-		sv_skyname = interfaces::console->get_convar("sv_skyname");
-		sv_skyname->flags &= ~fcvar_cheat;
-	}
-
-	sv_skyname->set_value("sky_csgo_night02");
-
-	interfaces::console->get_convar("r_drawspecificstaticprop")->set_value(0);
-
-	if (materials.size()) {
-		for (int i = 0; i < (int)materials.size(); i++)
-			modulate(materials[i].handle, materials[i].material);
-
+	if (!local_player)
 		return;
-	}
 
-	materials.clear();
+	old_sky_name = interfaces::console->get_convar("sv_skyname");
+	float brightness = c_config::get().nightmode_brightness / 100.f;
 
 	for (MaterialHandle_t i = interfaces::material_system->first_material(); i != interfaces::material_system->invalid_material_handle(); i = interfaces::material_system->next_material(i)) {
-		i_material* material = interfaces::material_system->get_material(i);
+		auto material = interfaces::material_system->get_material(i);
 
-		if (!material || material->is_error_material()) {
+		if (!material)
 			continue;
-		}
 
-		if (material->get_reference_count() <= 0) {
-			continue;
+		if (strstr(material->GetTextureGroupName(), "World")) {
+			material->color_modulate(brightness, brightness, brightness);
 		}
-
-		modulate(i, material, true);
+		else if (strstr(material->GetTextureGroupName(), "StaticProp")) {
+			material->color_modulate(brightness + 0.25f, brightness + 0.25f, brightness + 0.25f);
+		}
+		if (strstr(material->GetTextureGroupName(), ("SkyBox"))) {
+			material->color_modulate(c_config::get().clr_sky[0], c_config::get().clr_sky[1], c_config::get().clr_sky[2]);
+		}
 	}
+
+	utilities::load_named_sky("sky_csgo_night02");
+	executed = true;
 }
 
-void c_nightmode::remove() {
+void c_nightmode::remove() noexcept {
 	if (!executed) {
 		return;
 	}
 
+	auto local_player = reinterpret_cast<player_t*>(interfaces::entity_list->get_client_entity(interfaces::engine->get_local_player()));
+
+	if (!local_player)
+		return;
+
+	for (MaterialHandle_t i = interfaces::material_system->first_material(); i != interfaces::material_system->invalid_material_handle(); i = interfaces::material_system->next_material(i)) {
+		auto material = interfaces::material_system->get_material(i);
+
+		if (!material)
+			continue;
+
+		if (strstr(material->GetTextureGroupName(), "World")) {
+			material->color_modulate(1.f, 1.f, 1.f);
+		}
+		else if (strstr(material->GetTextureGroupName(), "StaticProp")) {
+			material->color_modulate(1.f, 1.f, 1.f);
+		}
+		if (strstr(material->GetTextureGroupName(), ("SkyBox"))) {
+			material->color_modulate(1.f, 1.f, 1.f);
+		}
+	}
+
+	if (old_sky_name)
+		utilities::load_named_sky(old_sky_name->string);
+
 	executed = false;
-	c_config::get().nightmode = false;
-
-	if (sv_skyname) {
-		sv_skyname->set_value(fallback_skybox.c_str());
-	}
-
-	interfaces::console->get_convar("r_drawspecificstaticprop")->set_value(1);
-
-	for (int i = 0; i < materials.size(); i++) {
-		if (materials[i].material->get_reference_count() <= 0) continue;
-
-		materials[i].restore();
-		materials[i].material->refresh();
-	}
-
-	materials.clear();
-
-	sv_skyname = nullptr;
-	fallback_skybox = "";
 }
