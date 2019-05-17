@@ -312,24 +312,39 @@ void __stdcall hooks::scene_end() {
 	original_fn(interfaces::render_view);
 }
 
-extern LRESULT ImGui_ImplDX9_WndProcHandler(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
-
 LRESULT __stdcall hooks::wndproc(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam) {
 	static bool pressed = false;
 
 	if (!pressed && GetAsyncKeyState(VK_INSERT)) {
 		pressed = true;
+		
 	}
 	else if (pressed && !GetAsyncKeyState(VK_INSERT)) {
 		pressed = false;
-
+		
 		c_menu::get().opened = !c_menu::get().opened;
 	}
 
+	if (c_menu::get().opened)
+	{
+		interfaces::inputsystem->enable_input(false);
+	
+	}
+	else if (!c_menu::get().opened)
+	{
+		interfaces::inputsystem->enable_input(true);
+	
+	}
+
+
+
 	if (c_menu::get().opened && ImGui_ImplDX9_WndProcHandler(hwnd, message, wparam, lparam))
 		return true;
-
+       
 	return CallWindowProcA(wndproc_original, hwnd, message, wparam, lparam);
+
+
+
 }
 
 void __stdcall hooks::lock_cursor() {
